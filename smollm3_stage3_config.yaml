@@ -531,16 +531,176 @@ datasets:
 # 3. New specialized reasoning datasets
 # 4. 2 trillion tokens of training (9T to 11T)
 
-# Filtering configuration (reuse from main config)
+# Filtering configuration
 filtering:
+  # Minimum and maximum text length (in characters)
   min_length: 100
   max_length: 1000000
+
+  # Keywords to KEEP (content related to these will be prioritized)
   keep_keywords:
-    # (Include all keywords from main config)
+    # English keywords
+    - "code"
+    - "programming"
+    - "algorithm"
+    - "function"
+    - "class"
+    - "method"
+    - "science"
+    - "research"
+    - "study"
+    - "biology"
+    - "chemistry"
+    - "physics"
+    - "mathematics"
+    - "technology"
+    - "engineering"
+    - "computer"
+    - "software"
+    - "hardware"
+    - "data"
+    - "analysis"
+    - "question"
+    - "answer"
+    - "solution"
+    - "problem"
+    - "explanation"
+    - "tutorial"
+    - "documentation"
+    - "development"
+    - "machine learning"
+    - "artificial intelligence"
+    - "neural network"
+    - "database"
+    - "api"
+
+    # Vietnamese keywords - Tech/Code
+    - "lập trình"
+    - "chương trình"
+    - "phần mềm"
+    - "ứng dụng"
+    - "phát triển"
+    - "code"
+    - "thuật toán"
+    - "hàm"
+    - "biến"
+    - "mảng"
+    - "cơ sở dữ liệu"
+    - "máy tính"
+    - "tính toán"
+
+    # Vietnamese keywords - Science
+    - "khoa học"
+    - "nghiên cứu"
+    - "học thuật"
+    - "sinh học"
+    - "hóa học"
+    - "vật lý"
+    - "toán học"
+    - "phân tích"
+    - "thí nghiệm"
+    - "nghiên cứu khoa học"
+
+    # Vietnamese keywords - Technology
+    - "công nghệ"
+    - "công nghệ thông tin"
+    - "kỹ thuật"
+    - "phần cứng"
+    - "dữ liệu"
+    - "trí tuệ nhân tạo"
+    - "học máy"
+    - "mạng nơ-ron"
+    - "big data"
+
+    # Vietnamese keywords - QA/Education
+    - "câu hỏi"
+    - "câu trả lời"
+    - "giải pháp"
+    - "vấn đề"
+    - "giải thích"
+    - "hướng dẫn"
+    - "học tập"
+    - "giáo dục"
+    - "kiến thức"
+    - "tài liệu"
+
+  # Keywords to EXCLUDE (junk/spam indicators)
   exclude_keywords:
-    # (Include all keywords from main config)
+    # English spam/junk
+    - "subscribe now"
+    - "click here"
+    - "buy now"
+    - "limited offer"
+    - "spam"
+    - "advertisement"
+    - "casino"
+    - "viagra"
+    - "lottery"
+    - "winner"
+    - "claim your prize"
+    - "act now"
+    - "free money"
+    - "congratulations"
+    - "you won"
+    - "click below"
+    - "special promotion"
+    - "limited time"
+    - "call now"
+    - "earn money fast"
+    - "make money online"
+    - "work from home"
+    - "get rich quick"
+    - "lose weight fast"
+    - "miracle cure"
+
+    # Vietnamese spam/junk
+    - "đăng ký ngay"
+    - "nhấp vào đây"
+    - "mua ngay"
+    - "ưu đãi có hạn"
+    - "giảm giá sốc"
+    - "khuyến mãi"
+    - "quảng cáo"
+    - "casino"
+    - "cá độ"
+    - "cờ bạc"
+    - "xổ số"
+    - "trúng thưởng"
+    - "nhận quà"
+    - "miễn phí"
+    - "kiếm tiền nhanh"
+    - "làm giàu"
+    - "thu nhập cao"
+    - "làm việc tại nhà"
+    - "bí quyết"
+    - "thần kỳ"
+    - "đặc biệt"
+    - "hàng giả"
+    - "hàng nhái"
+    - "gọi ngay"
+    - "nhấc máy"
+    - "tin nhắn rác"
+    - "spam"
+    - "lừa đảo"
+    - "chiêu trò"
+    - "mạo danh"
+
+  # Exclude texts with high ratio of these patterns
   junk_patterns:
-    # (Include all patterns from main config)
+    - "!!!!!+"  # Excessive exclamation marks
+    - "\\$\\$\\$+"  # Excessive dollar signs
+    - "https?://[^\\s]{200,}"  # Very long URLs
+    - "\\*{5,}"  # Excessive asterisks
+    - "#{5,}"  # Excessive hash symbols
+    - "={5,}"  # Excessive equal signs
+    - "[!?]{3,}"  # Multiple punctuation (!!!, ???, etc.)
+    - "(?i)(buy|click|subscribe|register).*now.*!!+"  # Spam call-to-action patterns
+    - "(?i)(mua|đăng\\s*ký|nhấp|gọi).*ngay.*[!]{2,}"  # Vietnamese spam patterns
+
+  # Language detection threshold (0-1)
+  language_confidence_threshold: 0.7
+
+  # Deduplication settings
   deduplication:
     enabled: true
-    similarity_threshold: 0.85
+    similarity_threshold: 0.85  # Cosine similarity threshold
