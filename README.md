@@ -5,6 +5,7 @@ A comprehensive toolkit for collecting, cleaning, filtering, and merging Hugging
 ## Features
 
 - **Multi-language Support**: Includes both English and Vietnamese datasets
+- **Weighted Sampling**: Production-tested dataset weights from SmolLM3 (exact 3-stage training mix)
 - **Bilingual Filtering**: Complete English and Vietnamese spam/junk detection (75 keep keywords, 54 exclude keywords)
 - **Smart Filtering**: Excludes junk/spam content while preserving technical, scientific, and code-related text
 - **Automatic Cleaning**: Removes HTML tags, normalizes Unicode, cleans URLs and whitespace
@@ -144,20 +145,37 @@ This runs test cases to verify the cleaning and filtering logic works correctly.
 Replicate SmolLM3's exact training mix with production-tested dataset weights:
 
 ```bash
-# Use SmolLM3's proven dataset mix (8T tokens)
+# Stage 1: Foundation (0-8T tokens) - Balanced mix
 python merge_datasets.py \
   --config smollm3_weighted_config.yaml \
-  --output-dir ./smollm3_dataset
+  --use-weights \
+  --output-dir ./smollm3_stage1_dataset
+
+# Stage 2: Educational Focus (8T-9T tokens) - Enhanced math & code
+python merge_datasets.py \
+  --config smollm3_stage2_config.yaml \
+  --use-weights \
+  --output-dir ./smollm3_stage2_dataset
+
+# Stage 3: Reasoning & Advanced Code (9T-11T tokens) - Expert level
+python merge_datasets.py \
+  --config smollm3_stage3_config.yaml \
+  --use-weights \
+  --output-dir ./smollm3_stage3_dataset
 ```
 
-**Dataset weights used**:
+**Stage 1 Dataset weights**:
 - 37% dclm (general web)
 - 33.3% fineweb-edu (educational content)
 - 11.9% code (Python 2.5%, C++ 1.8%, Java 1.3%, etc.)
 - 2.7% math (finemath 1.7%, infiwebmath 1.0%)
 - 9% multilingual (including 0.325% Vietnamese)
 
-**See `SMOLLM3_WEIGHTS.md` and `DATASET_WEIGHTS_SUMMARY.md` for complete details.**
+**Stage 2 & 3**: Increased math (up to 15.6%) and code (up to 20.2%) with reasoning datasets.
+
+**See `SMOLLM3_TRAINING_STAGES.md` for complete three-stage training guide.**
+**See `SMOLLM3_WEIGHTS.md` and `DATASET_WEIGHTS_SUMMARY.md` for weight details.**
+**See `WEIGHTED_SAMPLING_USAGE.md` for detailed weighted sampling documentation.**
 
 ### Merge Datasets (Quick Test)
 

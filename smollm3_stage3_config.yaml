@@ -1,0 +1,546 @@
+# SmolLM3 Stage 3 Training Configuration (9T-11T tokens, 2T total)
+# Source: https://huggingface.co/datasets/HuggingFaceTB/smollm3-configs/resolve/main/stage3_9T_11T.yaml
+# This is the "decay stage" focusing on reasoning datasets and enhanced code/math content
+
+datasets:
+  # ===== GENERAL WEB CONTENT (64.19%) =====
+
+  # English General Web (60.19%)
+  - name: "mlfoundations/dclm-baseline-1.0"
+    description: "DCLM baseline dataset - primary web content"
+    text_field: "text"
+    split: "train"
+    streaming: true
+    weight: 0.3  # 30.0% - Still largest but reduced from Stage 2
+    categories: ["general", "web"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceFW/fineweb-edu"
+    description: "Educational web content filtered from FineWeb"
+    text_field: "text"
+    split: "train"
+    streaming: true
+    weight: 0.28  # 28.0% - Reduced from Stage 2
+    categories: ["general", "education"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "allenai/peS2o"
+    description: "Semantic Scholar Open Research Corpus"
+    text_field: "text"
+    split: "train"
+    streaming: true
+    weight: 0.019  # 1.9% - Slightly reduced
+    categories: ["science", "research"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  # Multilingual FineWeb-2 Subsets (4.0% total - reduced)
+  - name: "HuggingFaceFW/fineweb-2"
+    description: "FineWeb2 - French subset"
+    text_field: "text"
+    config: "fra_Latn"
+    split: "train"
+    streaming: true
+    weight: 0.008  # 0.8% - Half of Stage 2
+    categories: ["general", "multilingual"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceFW/fineweb-2"
+    description: "FineWeb2 - Spanish subset"
+    text_field: "text"
+    config: "spa_Latn"
+    split: "train"
+    streaming: true
+    weight: 0.01  # 1.0% - Half of Stage 2
+    categories: ["general", "multilingual"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceFW/fineweb-2"
+    description: "FineWeb2 - German subset"
+    text_field: "text"
+    config: "deu_Latn"
+    split: "train"
+    streaming: true
+    weight: 0.011  # 1.1% - Half of Stage 2
+    categories: ["general", "multilingual"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceFW/fineweb-2"
+    description: "FineWeb2 - Italian subset"
+    text_field: "text"
+    config: "ita_Latn"
+    split: "train"
+    streaming: true
+    weight: 0.00525  # 0.525%
+    categories: ["general", "multilingual"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceFW/fineweb-2"
+    description: "FineWeb2 - Portuguese subset"
+    text_field: "text"
+    config: "por_Latn"
+    split: "train"
+    streaming: true
+    weight: 0.005  # 0.5%
+    categories: ["general", "multilingual"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceFW/fineweb-2"
+    description: "FineWeb2 - Chinese subset"
+    text_field: "text"
+    config: "cmn_Hans"
+    split: "train"
+    streaming: true
+    weight: 0.005  # 0.5%
+    categories: ["general", "multilingual"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceFW/fineweb-2"
+    description: "FineWeb2 - Russian subset"
+    text_field: "text"
+    config: "rus_Cyrl"
+    split: "train"
+    streaming: true
+    weight: 0.005  # 0.5%
+    categories: ["general", "multilingual"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceFW/fineweb-2"
+    description: "FineWeb2 - Persian subset"
+    text_field: "text"
+    config: "fas_Arab"
+    split: "train"
+    streaming: true
+    weight: 0.0015  # 0.15%
+    categories: ["general", "multilingual"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceFW/fineweb-2"
+    description: "FineWeb2 - Japanese subset"
+    text_field: "text"
+    config: "jpn_Jpan"
+    split: "train"
+    streaming: true
+    weight: 0.001625  # 0.1625%
+    categories: ["general", "multilingual"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceFW/fineweb-2"
+    description: "FineWeb2 - Korean subset"
+    text_field: "text"
+    config: "kor_Hang"
+    split: "train"
+    streaming: true
+    weight: 0.001625  # 0.1625%
+    categories: ["general", "multilingual"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceFW/fineweb-2"
+    description: "FineWeb2 - Hindi subset"
+    text_field: "text"
+    config: "hin_Deva"
+    split: "train"
+    streaming: true
+    weight: 0.001625  # 0.1625%
+    categories: ["general", "multilingual"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceFW/fineweb-2"
+    description: "FineWeb2 - Thai subset"
+    text_field: "text"
+    config: "tha_Thai"
+    split: "train"
+    streaming: true
+    weight: 0.001625  # 0.1625%
+    categories: ["general", "multilingual"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceFW/fineweb-2"
+    description: "FineWeb2 - Vietnamese subset 🇻🇳"
+    text_field: "text"
+    config: "vie_Latn"
+    split: "train"
+    streaming: true
+    weight: 0.00005  # 0.005% - Minimal Vietnamese presence
+    categories: ["general", "multilingual"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceFW/fineweb-2"
+    description: "FineWeb2 - Greek subset"
+    text_field: "text"
+    config: "ell_Grek"
+    split: "train"
+    streaming: true
+    weight: 0.001125  # 0.1125%
+    categories: ["general", "multilingual"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  # Wikipedia and StackExchange (0.5%)
+  - name: "wikimedia/wikipedia"
+    description: "Wikipedia - multilingual (used in SmolLM3)"
+    text_field: "text"
+    config: "20231101.en"
+    split: "train"
+    streaming: true
+    weight: 0.001  # 0.1%
+    categories: ["general", "knowledge"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceTB/stackexchange_2025_md"
+    description: "Stack Exchange in markdown format"
+    text_field: "text"
+    split: "train"
+    streaming: true
+    weight: 0.004  # 0.4%
+    categories: ["qa", "tech"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  # ===== CODE CONTENT (20.2%) - SIGNIFICANTLY INCREASED =====
+
+  # Stack-Edu "Real" Versions by Programming Language (16.675%)
+  - name: "HuggingFaceTB/stack-edu"
+    description: "Stack-Edu - Python educational code (REAL version)"
+    text_field: "text"
+    config: "python-real"
+    split: "train"
+    streaming: true
+    weight: 0.07  # 7.0% - MASSIVE increase from Stage 2
+    categories: ["code", "education"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceTB/stack-edu"
+    description: "Stack-Edu - C++ educational code (REAL version)"
+    text_field: "text"
+    config: "cpp-real"
+    split: "train"
+    streaming: true
+    weight: 0.044  # 4.4% - More than double Stage 2
+    categories: ["code", "education"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceTB/stack-edu"
+    description: "Stack-Edu - Java educational code (REAL version)"
+    text_field: "text"
+    config: "java-real"
+    split: "train"
+    streaming: true
+    weight: 0.032  # 3.2%
+    categories: ["code", "education"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceTB/stack-edu"
+    description: "Stack-Edu - JavaScript educational code (REAL version)"
+    text_field: "text"
+    config: "javascript-real"
+    split: "train"
+    streaming: true
+    weight: 0.032  # 3.2%
+    categories: ["code", "education"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceTB/stack-edu"
+    description: "Stack-Edu - C educational code (REAL version)"
+    text_field: "text"
+    config: "c-real"
+    split: "train"
+    streaming: true
+    weight: 0.0175  # 1.75%
+    categories: ["code", "education"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceTB/stack-edu"
+    description: "Stack-Edu - C# educational code (REAL version)"
+    text_field: "text"
+    config: "csharp-real"
+    split: "train"
+    streaming: true
+    weight: 0.015  # 1.5%
+    categories: ["code", "education"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceTB/stack-edu"
+    description: "Stack-Edu - PHP educational code (REAL version)"
+    text_field: "text"
+    config: "php-real"
+    split: "train"
+    streaming: true
+    weight: 0.015  # 1.5%
+    categories: ["code", "education"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceTB/stack-edu"
+    description: "Stack-Edu - HTML educational code (REAL version)"
+    text_field: "text"
+    config: "html-real"
+    split: "train"
+    streaming: true
+    weight: 0.015  # 1.5%
+    categories: ["code", "education"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceTB/stack-edu"
+    description: "Stack-Edu - Markdown documentation (REAL version)"
+    text_field: "text"
+    config: "markdown-real"
+    split: "train"
+    streaming: true
+    weight: 0.0125  # 1.25%
+    categories: ["code", "documentation"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceTB/stack-edu"
+    description: "Stack-Edu - SQL educational code (REAL version)"
+    text_field: "text"
+    config: "sql-real"
+    split: "train"
+    streaming: true
+    weight: 0.01  # 1.0%
+    categories: ["code", "education"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceTB/stack-edu"
+    description: "Stack-Edu - TypeScript educational code (REAL version)"
+    text_field: "text"
+    config: "typescript-real"
+    split: "train"
+    streaming: true
+    weight: 0.0075  # 0.75%
+    categories: ["code", "education"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceTB/stack-edu"
+    description: "Stack-Edu - Swift educational code (REAL version)"
+    text_field: "text"
+    config: "swift-real"
+    split: "train"
+    streaming: true
+    weight: 0.0025  # 0.25%
+    categories: ["code", "education"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceTB/stack-edu"
+    description: "Stack-Edu - Ruby educational code (REAL version)"
+    text_field: "text"
+    config: "ruby-real"
+    split: "train"
+    streaming: true
+    weight: 0.002  # 0.2%
+    categories: ["code", "education"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceTB/stack-edu"
+    description: "Stack-Edu - Rust educational code (REAL version)"
+    text_field: "text"
+    config: "rust-real"
+    split: "train"
+    streaming: true
+    weight: 0.002  # 0.2%
+    categories: ["code", "education"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceTB/stack-edu"
+    description: "Stack-Edu - Shell scripting educational code (REAL version)"
+    text_field: "text"
+    config: "shell-real"
+    split: "train"
+    streaming: true
+    weight: 0.00175  # 0.175%
+    categories: ["code", "education"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceTB/stack-edu"
+    description: "Stack-Edu - Go educational code (REAL version)"
+    text_field: "text"
+    config: "go-real"
+    split: "train"
+    streaming: true
+    weight: 0.00125  # 0.125%
+    categories: ["code", "education"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  # GitHub Issues and Kaggle Notebooks (3.525%)
+  - name: "HuggingFaceTB/issues-kaggle-notebooks"
+    description: "Pull requests from GitHub"
+    text_field: "text"
+    subset: "pull-requests"
+    split: "train"
+    streaming: true
+    weight: 0.015  # 1.5%
+    categories: ["code", "documentation"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceTB/issues-kaggle-notebooks"
+    description: "Jupyter notebooks scripts"
+    text_field: "text"
+    subset: "jupyter-scripts"
+    split: "train"
+    streaming: true
+    weight: 0.01375  # 1.375%
+    categories: ["code", "notebooks"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceTB/issues-kaggle-notebooks"
+    description: "GitHub issues discussions"
+    text_field: "text"
+    subset: "github-issues"
+    split: "train"
+    streaming: true
+    weight: 0.008  # 0.8%
+    categories: ["code", "documentation"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceTB/issues-kaggle-notebooks"
+    description: "Kaggle competition notebooks"
+    text_field: "text"
+    subset: "kaggle"
+    split: "train"
+    streaming: true
+    weight: 0.00125  # 0.125%
+    categories: ["code", "data-science"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  # ===== MATH CONTENT (15.61%) - SIGNIFICANTLY INCREASED =====
+
+  - name: "HuggingFaceTB/megamath-text-code-block"
+    description: "MegaMath with text and code blocks - large-scale math content"
+    text_field: "text"
+    split: "train"
+    streaming: true
+    weight: 0.05  # 5.0% - NEW major math dataset
+    categories: ["math", "code"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceTB/finemath"
+    description: "FineMath - curated mathematical educational content (4plus quality)"
+    text_field: "text"
+    config: "finemath-4plus"
+    split: "train"
+    streaming: true
+    weight: 0.045  # 4.5% - Enhanced from Stage 2
+    categories: ["math", "education"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "nvidia/OpenMathInstruct-2"
+    description: "OpenMathInstruct-2 - mathematical instruction dataset"
+    text_field: "text"
+    split: "train"
+    streaming: true
+    weight: 0.02  # 2.0% - NEW reasoning dataset
+    categories: ["math", "reasoning"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceTB/openmathreasoning-4k"
+    description: "OpenMathReasoning-4k - mathematical reasoning dataset"
+    text_field: "text"
+    split: "train"
+    streaming: true
+    weight: 0.015  # 1.5% - NEW reasoning dataset
+    categories: ["math", "reasoning"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceTB/open-codereasoning-4k"
+    description: "OpenCodeReasoning-4k - code reasoning dataset"
+    text_field: "text"
+    split: "train"
+    streaming: true
+    weight: 0.015  # 1.5% - NEW code reasoning dataset
+    categories: ["code", "reasoning", "math"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "nvidia/OpenMathInstruct-1"
+    description: "OpenMathInstruct-1 - earlier version of math instruction dataset"
+    text_field: "text"
+    split: "train"
+    streaming: true
+    weight: 0.01  # 1.0%
+    categories: ["math"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+  - name: "HuggingFaceTB/natural_reasoning"
+    description: "Natural reasoning dataset - general reasoning tasks"
+    text_field: "text"
+    split: "train"
+    streaming: true
+    weight: 0.011  # 1.1% - NEW reasoning dataset
+    categories: ["reasoning", "general"]
+    verified: true
+    source: "SmolLM3-Stage3"
+
+# Summary of weights by category:
+# General Web: 64.19% (dclm 30%, fineweb-edu 28%, multilingual 4%, other 0.5%)
+# Code: 20.2% (stack-edu-real 16.675%, github/kaggle 3.525%)
+# Math + Reasoning: 15.61% (megamath 5%, finemath 4.5%, reasoning datasets 6.11%)
+# Vietnamese: 0.005% (minimal)
+# TOTAL: 100%
+
+# Key Changes from Stage 2 to Stage 3:
+# - General web reduced: 69.5% → 64.19%
+# - Code increased: 13.2% → 20.2% (focus on "real" stack-edu versions)
+# - Math + Reasoning DOUBLED: 9.08% → 15.61%
+# - Vietnamese same: 0.005%
+# - Python code weight: 2.0% → 7.0% (3.5x increase!)
+# - NEW: Multiple reasoning datasets (openmathreasoning, codereasoning, natural_reasoning)
+
+# Stage 3 is called the "decay stage" and focuses on:
+# 1. Enhanced code education with "real" versions of stack-edu
+# 2. Significant increase in mathematical and reasoning content
+# 3. New specialized reasoning datasets
+# 4. 2 trillion tokens of training (9T to 11T)
+
+# Filtering configuration (reuse from main config)
+filtering:
+  min_length: 100
+  max_length: 1000000
+  keep_keywords:
+    # (Include all keywords from main config)
+  exclude_keywords:
+    # (Include all keywords from main config)
+  junk_patterns:
+    # (Include all patterns from main config)
+  deduplication:
+    enabled: true
+    similarity_threshold: 0.85
