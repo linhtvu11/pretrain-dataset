@@ -7,9 +7,10 @@ import os
 import yaml
 import argparse
 from typing import Dict, List, Optional, Iterator
-from datasets import load_dataset, Dataset, DatasetDict, concatenate_datasets
+from datasets import load_dataset, Dataset, DatasetDict, concatenate_datasets, interleave_datasets
 from tqdm import tqdm
 import logging
+import numpy as np
 from clean_and_filter import DatasetCleaner
 
 # Setup logging
@@ -23,14 +24,23 @@ logger = logging.getLogger(__name__)
 class DatasetMerger:
     """Handles loading, cleaning, and merging of multiple datasets"""
 
-    def __init__(self, config_path: str = 'datasets_config.yaml'):
-        """Initialize with configuration file"""
+    def __init__(self, config_path: str = 'datasets_config.yaml', use_weights: bool = False):
+        """Initialize with configuration file
+
+        Args:
+            config_path: Path to YAML configuration file
+            use_weights: Whether to use dataset weights for sampling
+        """
         logger.info(f"Loading configuration from {config_path}")
         with open(config_path, 'r') as f:
             self.config = yaml.safe_load(f)
 
         self.cleaner = DatasetCleaner(self.config)
         self.merged_data = []
+        self.use_weights = use_weights
+
+        if self.use_weights:
+            logger.info("Weighted sampling enabled")
 
     def load_single_dataset(
         self,
@@ -141,6 +151,119 @@ class DatasetMerger:
         except (KeyError, TypeError, AttributeError):
             return None
 
+    def merge_all_datasets_weighted(
+        self,
+        max_samples: Optional[int] = None,
+        seed: int = 42
+    ) -> List[str]:
+        """
+        Merge all datasets using weighted sampling
+
+        Args:
+            max_samples: Maximum total samples to generate (None for unlimited)
+            seed: Random seed for reproducibility
+
+        Returns:
+            List of cleaned texts
+        """
+        logger.info("Loading datasets for weighted sampling...")
+
+        all_datasets = []
+        all_weights = []
+        all_names = []
+
+        # Collect all datasets (both English and Vietnamese are in same config)
+        for dataset_info in self.config.get('datasets', []):
+            weight = dataset_info.get('weight')
+            if weight is None or weight == 0:
+                logger.warning(f"Skipping {dataset_info['name']}: no weight defined")
+                continue
+
+            dataset_name = dataset_info['name']
+            text_field = dataset_info['text_field']
+            config = dataset_info.get('config', None)
+            split = dataset_info.get('split', 'train')
+
+            try:
+                logger.info(f"Loading {dataset_name}" +
+                           (f" [config: {config}]" if config else "") +
+                           f" [weight: {weight}]")
+
+                # Load dataset in streaming mode
+                dataset = load_dataset(
+                    dataset_name,
+                    config if config else None,
+                    split=split,
+                    streaming=True,
+                    trust_remote_code=True
+                )
+
+                all_datasets.append(dataset)
+                all_weights.append(weight)
+                all_names.append(dataset_name + (f"/{config}" if config else ""))
+
+            except Exception as e:
+                logger.error(f"Error loading {dataset_name}: {e}")
+                continue
+
+        if not all_datasets:
+            logger.error("No datasets loaded!")
+            return []
+
+        # Normalize weights
+        total_weight = sum(all_weights)
+        probabilities = [w / total_weight for w in all_weights]
+
+        logger.info(f"\nDataset weights (normalized):")
+        for name, prob in zip(all_names, probabilities):
+            logger.info(f"  {name}: {prob:.4f} ({prob*100:.2f}%)")
+
+        # Interleave datasets according to weights
+        logger.info("\nInterleaving datasets with weighted sampling...")
+        interleaved = interleave_datasets(
+            all_datasets,
+            probabilities=probabilities,
+            seed=seed,
+            stopping_strategy="all_exhausted"
+        )
+
+        # Process interleaved dataset
+        merged_texts = []
+        count = 0
+        kept_count = 0
+
+        for example in tqdm(interleaved, desc="Processing weighted samples", total=max_samples):
+            if max_samples and count >= max_samples:
+                break
+
+            count += 1
+
+            # Try to extract text (try common field names)
+            text = None
+            for dataset_info in self.config.get('datasets', []):
+                text_field = dataset_info['text_field']
+                text = self._extract_text(example, text_field)
+                if text:
+                    break
+
+            if not text:
+                continue
+
+            # Clean and filter
+            cleaned = self.cleaner.process_text(text, min_relevance=0.0)
+
+            if cleaned:
+                kept_count += 1
+                merged_texts.append(cleaned)
+
+        logger.info(
+            f"\nWeighted sampling completed: "
+            f"Processed {count}, Kept {kept_count} "
+            f"({kept_count/max(1, count)*100:.2f}%)"
+        )
+
+        return merged_texts
+
     def merge_all_datasets(
         self,
         include_english: bool = True,
@@ -148,7 +271,7 @@ class DatasetMerger:
         max_samples_per_dataset: Optional[int] = None
     ) -> List[str]:
         """
-        Merge all datasets from configuration
+        Merge all datasets from configuration (simple concatenation without weights)
 
         Args:
             include_english: Whether to include English datasets
@@ -314,22 +437,43 @@ def main():
         action='store_true',
         help='Skip saving locally'
     )
+    parser.add_argument(
+        '--use-weights',
+        action='store_true',
+        help='Use dataset weights for sampling (requires weighted config file)'
+    )
+    parser.add_argument(
+        '--seed',
+        type=int,
+        default=42,
+        help='Random seed for weighted sampling (default: 42)'
+    )
 
     args = parser.parse_args()
 
     # Initialize merger
-    merger = DatasetMerger(args.config)
-
-    # Determine which datasets to include
-    include_english = not args.vietnamese_only
-    include_vietnamese = not args.english_only
+    merger = DatasetMerger(args.config, use_weights=args.use_weights)
 
     # Merge datasets
-    merged_texts = merger.merge_all_datasets(
-        include_english=include_english,
-        include_vietnamese=include_vietnamese,
-        max_samples_per_dataset=args.max_samples
-    )
+    if args.use_weights:
+        # Use weighted sampling
+        logger.info("Using weighted sampling mode")
+        merged_texts = merger.merge_all_datasets_weighted(
+            max_samples=args.max_samples,
+            seed=args.seed
+        )
+    else:
+        # Use simple concatenation
+        logger.info("Using simple concatenation mode")
+        # Determine which datasets to include
+        include_english = not args.vietnamese_only
+        include_vietnamese = not args.english_only
+
+        merged_texts = merger.merge_all_datasets(
+            include_english=include_english,
+            include_vietnamese=include_vietnamese,
+            max_samples_per_dataset=args.max_samples
+        )
 
     if not merged_texts:
         logger.error("No texts were merged! Check your configuration and dataset access.")
