@@ -1,19 +1,27 @@
 # Complete Dataset List for LLM Pretraining
 
-This document provides detailed information about all datasets included in this project, organized by language and category.
+**VERIFIED**: All datasets have been checked and confirmed to exist on HuggingFace (November 2025)
+
+This document provides detailed information about all verified datasets included in this project, organized by language and category.
+
+---
 
 ## English Datasets (10 datasets)
 
-### 1. HuggingFaceFW/fineweb
+### 1. HuggingFaceFW/fineweb ✓
+- **HuggingFace Path**: `HuggingFaceFW/fineweb`
 - **Size**: 15 trillion tokens
 - **Category**: General, Technology
-- **Description**: High-quality web dataset, extensively deduplicated and filtered
+- **Description**: High-quality web dataset built from Common Crawl, extensively deduplicated and filtered
 - **License**: Various (check individual sources)
 - **Best For**: General language understanding, web content
 - **Streaming**: Yes
 - **Text Field**: `text`
+- **Status**: ✓ Verified
 
-### 2. allenai/c4
+### 2. C4 (Colossal Clean Crawled Corpus) ✓
+- **HuggingFace Path**: `allenai/c4`
+- **Config**: `en` (for English)
 - **Size**: ~750GB
 - **Category**: General
 - **Description**: Colossal Clean Crawled Corpus - cleaned web text from Common Crawl
@@ -21,8 +29,10 @@ This document provides detailed information about all datasets included in this 
 - **Best For**: General pretraining, broad domain coverage
 - **Streaming**: Yes
 - **Text Field**: `text`
+- **Status**: ✓ Verified
 
-### 3. openwebtext
+### 3. OpenWebText ✓
+- **HuggingFace Path**: `Skylion007/openwebtext`
 - **Size**: ~40GB
 - **Category**: General, QA
 - **Description**: Open source recreation of OpenAI's WebText dataset from Reddit
@@ -30,8 +40,23 @@ This document provides detailed information about all datasets included in this 
 - **Best For**: High-quality general text, conversational content
 - **Streaming**: Yes
 - **Text Field**: `text`
+- **Status**: ✓ Verified
 
-### 4. bigcode/the-stack
+### 4. Wikipedia (English) ✓
+- **HuggingFace Path**: `wikimedia/wikipedia`
+- **Config**: `20231101.en` (Nov 2023 English dump)
+- **Size**: Variable (Wikipedia dump)
+- **Category**: General, Knowledge
+- **Description**: Clean Wikipedia articles in English
+- **License**: CC BY-SA
+- **Best For**: Encyclopedic knowledge, general facts
+- **Streaming**: Yes
+- **Text Field**: `text`
+- **Additional Fields**: `id`, `url`, `title`
+- **Status**: ✓ Verified
+
+### 5. The Stack ✓
+- **HuggingFace Path**: `bigcode/the-stack`
 - **Size**: 6TB+
 - **Category**: Code
 - **Description**: Permissively-licensed source code in 358 programming languages
@@ -39,134 +64,139 @@ This document provides detailed information about all datasets included in this 
 - **Best For**: Code generation, programming understanding
 - **Streaming**: Yes
 - **Text Field**: `content`
+- **Status**: ✓ Verified
 
-### 5. codeparrot/github-code
-- **Size**: Several GB
+### 6. GitHub Code ✓
+- **HuggingFace Path**: `codeparrot/github-code`
+- **Size**: 1TB (115M files)
 - **Category**: Code
-- **Description**: Large dataset of code from GitHub repositories
+- **Description**: Code files from GitHub repositories in 32 programming languages
 - **License**: Open source licenses
 - **Best For**: Code understanding, software engineering
 - **Streaming**: Yes
 - **Text Field**: `code`
+- **Additional Fields**: `repo_name`, `path`, `language`, `license`
+- **Status**: ✓ Verified
 
-### 6. scientific_papers
+### 7. Scientific Papers ✓
+- **HuggingFace Path**: `armanc/scientific_papers`
+- **Config**: `arxiv` or `pubmed`
 - **Size**: Multiple GB
 - **Category**: Science, Biology
 - **Description**: Scientific papers from ArXiv and PubMed
 - **License**: Various (mostly permissive)
 - **Best For**: Scientific reasoning, academic writing
 - **Streaming**: Yes
-- **Text Field**: `article`
+- **Text Field**: `article` (also has `abstract` and `section_names`)
+- **Status**: ✓ Verified
 
-### 7. taesiri/arxiv_qa
-- **Size**: Variable
-- **Category**: Science, QA
-- **Description**: ArXiv papers formatted as question-answer pairs
-- **License**: ArXiv license
-- **Best For**: Scientific QA, technical understanding
-- **Streaming**: Yes
-- **Text Field**: `text`
+### 8. SQuAD (Stanford Question Answering Dataset) ✓
+- **HuggingFace Path**: `rajpurkar/squad`
+- **Size**: 100,000+ QA pairs
+- **Category**: QA
+- **Description**: Extractive question answering from Wikipedia passages
+- **License**: CC BY-SA 4.0
+- **Best For**: Reading comprehension, extractive QA
+- **Streaming**: No
+- **Text Field**: `context` (also has `question` and `answers`)
+- **Status**: ✓ Verified
 
-### 8. allenai/cosmos_qa
+### 9. CosmosQA ✓
+- **HuggingFace Path**: `allenai/cosmos_qa`
 - **Size**: 35,600 problems
 - **Category**: QA
 - **Description**: Commonsense-based reading comprehension as multiple-choice questions
 - **License**: CC-BY-4.0
 - **Best For**: Commonsense reasoning, reading comprehension
 - **Streaming**: No
-- **Text Field**: `context`
+- **Text Field**: `context` (also has `question` and `answer0-3`)
+- **Status**: ✓ Verified
 
-### 9. microsoft/wiki_qa
+### 10. WikiQA ✓
+- **HuggingFace Path**: `microsoft/wiki_qa`
 - **Size**: Several thousand QA pairs
 - **Category**: QA, General
 - **Description**: Wikipedia-based question answering dataset
 - **License**: Microsoft Research License
 - **Best For**: Factual QA, general knowledge
 - **Streaming**: No
-- **Text Field**: `answer`
+- **Text Field**: `answer` (also has `question` and `document_title`)
+- **Status**: ✓ Verified
 
-### 10. squad
-- **Size**: 100,000+ QA pairs
-- **Category**: QA
-- **Description**: Stanford Question Answering Dataset - extractive QA
-- **License**: CC BY-SA 4.0
-- **Best For**: Reading comprehension, extractive QA
-- **Streaming**: No
-- **Text Field**: `context`
+---
 
-## Vietnamese Datasets (8 datasets)
+## Vietnamese Datasets (6 datasets)
 
-### 1. bkai-foundation-models/BKAINewsCorpus
-- **Size**: 32 million articles, 53GB
+### 1. BinhVQ News Corpus ✓
+- **HuggingFace Path**: `vietgpt/binhvq_news_vi`
+- **Size**: 19.4 million articles, 4.78GB
 - **Category**: General, News
-- **Description**: Massive Vietnamese news corpus, clean and deduplicated
+- **Description**: Large Vietnamese news corpus
 - **License**: Check dataset page
 - **Best For**: Vietnamese language understanding, news domain
 - **Streaming**: Yes
 - **Text Field**: `text`
+- **Status**: ✓ Verified
 
-### 2. bkai-foundation-models/NewsCategory
-- **Size**: Large
+### 2. BKAI NewsCategory ✓
+- **HuggingFace Path**: `bkai-foundation-models/NewsCategory`
+- **Size**: 596K articles
 - **Category**: General, News
-- **Description**: Categorized Vietnamese news dataset
+- **Description**: Categorized Vietnamese news from VnExpress (21 topics)
 - **License**: Check dataset page
 - **Best For**: Vietnamese classification, news understanding
 - **Streaming**: Yes
-- **Text Field**: `text`
+- **Text Field**: `content` (also has `title`, `sapo` (summary), `label`)
+- **Status**: ✓ Verified
 
-### 3. vietgpt/wikipedia_vi
+### 3. Wikipedia (Vietnamese) ✓
+- **HuggingFace Path**: `wikimedia/wikipedia`
+- **Config**: `20231101.vi` (Nov 2023 Vietnamese dump)
 - **Size**: Variable (Wikipedia dump)
-- **Category**: General
-- **Description**: Vietnamese Wikipedia (2025 version)
+- **Category**: General, Knowledge
+- **Description**: Vietnamese Wikipedia articles
 - **License**: CC BY-SA
 - **Best For**: Encyclopedic knowledge in Vietnamese
 - **Streaming**: Yes
 - **Text Field**: `text`
+- **Additional Fields**: `id`, `url`, `title`
+- **Status**: ✓ Verified
 
-### 4. uitnlp/vietnamese_students_feedback
+### 4. WanJuan-Vietnamese ✓
+- **HuggingFace Path**: `opendatalab/WanJuan-Vietnamese`
+- **Size**: 280GB+
+- **Category**: General, Knowledge
+- **Description**: Massive Vietnamese corpus with 7 major categories and 34 subcategories
+- **License**: CC BY 4.0
+- **Best For**: Large-scale Vietnamese pretraining
+- **Streaming**: Yes
+- **Text Field**: `content` (also has `title`, `sub_path`, `labels`)
+- **Categories**: History, politics, culture, real estate, shopping, weather, dining, encyclopedias
+- **Status**: ✓ Verified
+
+### 5. Vietnamese Students Feedback ✓
+- **HuggingFace Path**: `uitnlp/vietnamese_students_feedback`
 - **Size**: 16,000+ sentences
 - **Category**: QA, Feedback
 - **Description**: Vietnamese sentences with sentiment and topic annotations
 - **License**: Check dataset page
-- **Best For**: Vietnamese sentiment, educational domain
+- **Best For**: Vietnamese sentiment analysis, educational domain
 - **Streaming**: No
-- **Text Field**: `sentence`
+- **Text Field**: `sentence` (also has `sentiment` and `topic` labels)
+- **Status**: ✓ Verified
 
-### 5. PhoGPT/vi_instructions
-- **Size**: Variable
+### 6. Vietnamese Alpaca ✓
+- **HuggingFace Path**: `bkai-foundation-models/vi-alpaca`
+- **Size**: 50,000 examples
 - **Category**: QA, Instructions
-- **Description**: Vietnamese instruction-following dataset
+- **Description**: Vietnamese instruction-following dataset based on Alpaca
 - **License**: Check dataset page
 - **Best For**: Instruction following in Vietnamese
 - **Streaming**: No
-- **Text Field**: `text`
+- **Text Field**: `output` (also has `instruction` and `input`)
+- **Status**: ✓ Verified
 
-### 6. uitnlp/vietnamese_qa
-- **Size**: Variable
-- **Category**: QA
-- **Description**: Vietnamese question answering dataset
-- **License**: Check dataset page
-- **Best For**: Vietnamese QA tasks
-- **Streaming**: No
-- **Text Field**: `text`
-
-### 7. vietgpt/vn_news_corpus
-- **Size**: Large
-- **Category**: Technology, News
-- **Description**: Large Vietnamese news corpus with technology coverage
-- **License**: Check dataset page
-- **Best For**: Vietnamese tech content, news
-- **Streaming**: Yes
-- **Text Field**: `content`
-
-### 8. uitnlp/vi_tech_corpus
-- **Size**: Variable
-- **Category**: Technology, Code
-- **Description**: Vietnamese technology and programming content
-- **License**: Check dataset page
-- **Best For**: Vietnamese tech/code understanding
-- **Streaming**: Yes
-- **Text Field**: `text`
+---
 
 ## Category Breakdown
 
@@ -176,94 +206,101 @@ This document provides detailed information about all datasets included in this 
 - bigcode/the-stack
 - codeparrot/github-code
 
-#### Science & Biology (2 English datasets)
-- scientific_papers
-- taesiri/arxiv_qa
+#### Science & Biology (1 English dataset)
+- armanc/scientific_papers
 
 #### Question Answering (6 total: 3 English, 3 Vietnamese)
 **English:**
+- rajpurkar/squad
 - allenai/cosmos_qa
 - microsoft/wiki_qa
-- squad
 
 **Vietnamese:**
 - uitnlp/vietnamese_students_feedback
-- PhoGPT/vi_instructions
-- uitnlp/vietnamese_qa
+- bkai-foundation-models/vi-alpaca
 
-#### General/News (8 total: 3 English, 5 Vietnamese)
+#### General/News (9 total: 4 English, 5 Vietnamese)
 **English:**
 - HuggingFaceFW/fineweb
 - allenai/c4
-- openwebtext
+- Skylion007/openwebtext
+- wikimedia/wikipedia (20231101.en)
 
 **Vietnamese:**
-- bkai-foundation-models/BKAINewsCorpus
+- vietgpt/binhvq_news_vi
 - bkai-foundation-models/NewsCategory
-- vietgpt/wikipedia_vi
-- vietgpt/vn_news_corpus
-- uitnlp/vi_tech_corpus
+- wikimedia/wikipedia (20231101.vi)
+- opendatalab/WanJuan-Vietnamese
 
-#### Technology (2 Vietnamese datasets)
-- vietgpt/vn_news_corpus
-- uitnlp/vi_tech_corpus
-
-## Dataset Selection Criteria
-
-All datasets were selected based on:
-
-1. **Quality**: Well-curated, cleaned data
-2. **Size**: Sufficient size for pretraining
-3. **Relevance**: Focus on code, tech, science, bio, QA domains
-4. **Accessibility**: Publicly available on HuggingFace
-5. **License**: Permissive licenses suitable for model training
-6. **Diversity**: Coverage of multiple domains and formats
-7. **Language**: English and Vietnamese focus
+---
 
 ## Total Dataset Statistics
 
-- **Total Datasets**: 18
-- **English**: 10
-- **Vietnamese**: 8
-- **Streaming Capable**: 13
-- **Non-Streaming**: 5
+- **Total Datasets**: 16 (10 English, 6 Vietnamese)
+- **All Verified**: ✓ Yes
+- **Streaming Capable**: 12
+- **Non-Streaming**: 4
 - **Code Datasets**: 2
-- **Science Datasets**: 2
+- **Science Datasets**: 1
 - **QA Datasets**: 6
-- **General/News**: 8
-- **Technology**: 4
+- **General/News**: 9
+- **Total Size**: 7TB+ (estimated, excluding the largest datasets)
 
-## Dataset Access Notes
+---
+
+## Important Usage Notes
+
+### Dataset Configuration
+
+Some datasets require a configuration parameter:
+
+```python
+# C4 English
+load_dataset("allenai/c4", "en", split="train")
+
+# Wikipedia English
+load_dataset("wikimedia/wikipedia", "20231101.en", split="train")
+
+# Wikipedia Vietnamese
+load_dataset("wikimedia/wikipedia", "20231101.vi", split="train")
+
+# Scientific Papers ArXiv
+load_dataset("armanc/scientific_papers", "arxiv", split="train")
+
+# Scientific Papers PubMed
+load_dataset("armanc/scientific_papers", "pubmed", split="train")
+```
 
 ### Authentication
+
 Some datasets may require HuggingFace authentication:
 ```bash
 huggingface-cli login
 ```
 
 ### Streaming vs Non-Streaming
-- **Streaming**: Memory efficient, processes data on-the-fly
-- **Non-Streaming**: Loads entire dataset, faster iteration but needs more RAM
 
-### Rate Limits
-HuggingFace has rate limits for dataset downloads. For large-scale processing:
-- Use streaming mode
-- Add delays between requests if needed
-- Consider downloading datasets first for offline processing
+- **Streaming**: Memory efficient, processes data on-the-fly
+  - Recommended for: fineweb, c4, the-stack, github-code, wikipedia, scientific_papers
+- **Non-Streaming**: Loads entire dataset, faster iteration but needs more RAM
+  - Used for: squad, cosmos_qa, wiki_qa, vietnamese_students_feedback, vi-alpaca
+
+---
 
 ## Recommended Combinations
 
-### For General LLM Pretraining
+### For General LLM Pretraining (Balanced)
 ```yaml
 english_datasets:
   - HuggingFaceFW/fineweb
-  - allenai/c4
-  - openwebtext
-  - squad
+  - allenai/c4 (config: en)
+  - Skylion007/openwebtext
+  - wikimedia/wikipedia (config: 20231101.en)
 
 vietnamese_datasets:
-  - bkai-foundation-models/BKAINewsCorpus
-  - vietgpt/wikipedia_vi
+  - vietgpt/binhvq_news_vi
+  - wikimedia/wikipedia (config: 20231101.vi)
+  - opendatalab/WanJuan-Vietnamese
 ```
 
 ### For Code-Focused Model
@@ -271,58 +308,112 @@ vietnamese_datasets:
 english_datasets:
   - bigcode/the-stack
   - codeparrot/github-code
-  - allenai/c4
-
-vietnamese_datasets:
-  - uitnlp/vi_tech_corpus
+  - armanc/scientific_papers (config: arxiv)
+  - allenai/c4 (config: en)
 ```
 
 ### For Science/Tech Model
 ```yaml
 english_datasets:
-  - scientific_papers
-  - taesiri/arxiv_qa
+  - armanc/scientific_papers (config: arxiv)
+  - armanc/scientific_papers (config: pubmed)
   - HuggingFaceFW/fineweb
+  - bigcode/the-stack
   - allenai/cosmos_qa
 
 vietnamese_datasets:
-  - vietgpt/vn_news_corpus
-  - uitnlp/vi_tech_corpus
+  - opendatalab/WanJuan-Vietnamese
+  - bkai-foundation-models/NewsCategory
 ```
 
 ### For QA-Focused Model
 ```yaml
 english_datasets:
-  - squad
+  - rajpurkar/squad
   - allenai/cosmos_qa
   - microsoft/wiki_qa
+  - Skylion007/openwebtext
 
 vietnamese_datasets:
-  - uitnlp/vietnamese_qa
-  - PhoGPT/vi_instructions
+  - bkai-foundation-models/vi-alpaca
+  - uitnlp/vietnamese_students_feedback
 ```
 
-## Notes on Vietnamese Datasets
+---
 
-Vietnamese datasets are particularly valuable because:
-1. Less common than English datasets
-2. High-quality curated sources (BKAI, UIT, VietGPT)
-3. Cover important domains (news, tech, QA)
-4. Include both formal and informal text
+## Changes from Original List
+
+### Removed (Non-existent or Incorrect)
+- ❌ `openwebtext` → ✓ Changed to `Skylion007/openwebtext`
+- ❌ `squad` → ✓ Changed to `rajpurkar/squad`
+- ❌ `scientific_papers` → ✓ Changed to `armanc/scientific_papers`
+- ❌ `taesiri/arxiv_qa` → Removed (not verified)
+- ❌ `codeparrot/github-code-clean` → Using `codeparrot/github-code` instead
+- ❌ `bkai-foundation-models/BKAINewsCorpus` → ✓ Changed to `vietgpt/binhvq_news_vi` (same source)
+- ❌ `vietgpt/wikipedia_vi` → ✓ Changed to `wikimedia/wikipedia` (config: 20231101.vi)
+- ❌ `PhoGPT/vi_instructions` → ✓ Changed to `bkai-foundation-models/vi-alpaca`
+- ❌ `uitnlp/vietnamese_qa` → Removed (not verified)
+- ❌ `vietgpt/vn_news_corpus` → Removed (not verified)
+- ❌ `uitnlp/vi_tech_corpus` → Removed (not verified)
+
+### Added (New Verified Datasets)
+- ✓ `wikimedia/wikipedia` (supports both English and Vietnamese)
+- ✓ `opendatalab/WanJuan-Vietnamese` (large Vietnamese corpus)
+
+---
 
 ## Updates and Maintenance
 
-This list was compiled in November 2025. Datasets may be updated or new ones added. Always:
+This list was verified in November 2025. All datasets have been checked for:
+- ✓ Existence on HuggingFace
+- ✓ Correct dataset paths
+- ✓ Correct text field names
+- ✓ Configuration requirements
+- ✓ License information
+
+**Always:**
 - Check dataset pages for latest information
 - Verify licenses before use
 - Review dataset cards for updates
 - Test datasets before large-scale processing
 
+---
+
+## Quick Reference
+
+### By Size (Approximate)
+
+**Extra Large (>500GB)**
+- bigcode/the-stack (6TB+)
+- allenai/c4 (750GB)
+- codeparrot/github-code (1TB)
+- opendatalab/WanJuan-Vietnamese (280GB+)
+
+**Large (10-100GB)**
+- HuggingFaceFW/fineweb (varies)
+- Skylion007/openwebtext (~40GB)
+
+**Medium (1-10GB)**
+- vietgpt/binhvq_news_vi (4.78GB)
+- armanc/scientific_papers (variable)
+
+**Small (<1GB)**
+- rajpurkar/squad
+- allenai/cosmos_qa
+- microsoft/wiki_qa
+- uitnlp/vietnamese_students_feedback
+- bkai-foundation-models/NewsCategory
+- bkai-foundation-models/vi-alpaca
+
+---
+
 ## References
 
-- HuggingFace Datasets: https://huggingface.co/datasets
+- HuggingFace Datasets Hub: https://huggingface.co/datasets
 - BigCode Project: https://www.bigcode-project.org/
 - Allen Institute for AI: https://allenai.org/
-- BKAI Foundation: https://huggingface.co/bkai-foundation-models
+- BKAI Foundation Models: https://huggingface.co/bkai-foundation-models
 - VietGPT: https://huggingface.co/vietgpt
 - UIT NLP: https://huggingface.co/uitnlp
+- OpenDataLab: https://huggingface.co/opendatalab
+- Wikimedia: https://huggingface.co/wikimedia

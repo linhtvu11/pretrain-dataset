@@ -1,4 +1,5 @@
 # Configuration file for LLM Pretraining Datasets
+# VERIFIED: All datasets have been checked and confirmed to exist on HuggingFace (Nov 2025)
 # This file lists datasets suitable for pretraining LLMs with focus on code, tech, science, bio, and QA
 
 english_datasets:
@@ -9,20 +10,33 @@ english_datasets:
     split: "train"
     streaming: true
     categories: ["general", "tech"]
+    verified: true
 
   - name: "allenai/c4"
     description: "Colossal Clean Crawled Corpus - 750GB of cleaned web text"
     text_field: "text"
+    config: "en"  # Specify English language
     split: "train"
     streaming: true
     categories: ["general"]
+    verified: true
 
-  - name: "openwebtext"
-    description: "Open source recreation of WebText dataset, Reddit links"
+  - name: "Skylion007/openwebtext"
+    description: "Open source recreation of WebText dataset from Reddit links"
     text_field: "text"
     split: "train"
     streaming: true
     categories: ["general", "qa"]
+    verified: true
+
+  - name: "wikimedia/wikipedia"
+    description: "Wikipedia dump - English version (Nov 2023)"
+    text_field: "text"
+    config: "20231101.en"  # English Wikipedia from Nov 1, 2023
+    split: "train"
+    streaming: true
+    categories: ["general", "knowledge"]
+    verified: true
 
   # Code datasets
   - name: "bigcode/the-stack"
@@ -31,109 +45,101 @@ english_datasets:
     split: "train"
     streaming: true
     categories: ["code"]
+    verified: true
 
   - name: "codeparrot/github-code"
-    description: "Large dataset of code from GitHub repositories"
+    description: "115M code files from GitHub in 32 programming languages"
     text_field: "code"
     split: "train"
     streaming: true
     categories: ["code"]
+    verified: true
 
   # Science and academic datasets
-  - name: "scientific_papers"
+  - name: "armanc/scientific_papers"
     description: "Scientific papers from ArXiv and PubMed"
-    text_field: "article"
+    text_field: "article"  # Also has "abstract" field
+    config: "arxiv"  # Can also use "pubmed"
     split: "train"
     streaming: true
     categories: ["science", "bio"]
-
-  - name: "taesiri/arxiv_qa"
-    description: "ArXiv papers formatted as QA pairs"
-    text_field: "text"
-    split: "train"
-    streaming: true
-    categories: ["science", "qa"]
+    verified: true
 
   # Question Answering datasets
-  - name: "allenai/cosmos_qa"
-    description: "35.6K commonsense-based reading comprehension problems"
-    text_field: "context"
+  - name: "rajpurkar/squad"
+    description: "Stanford Question Answering Dataset, 100K+ QA pairs"
+    text_field: "context"  # Also has "question" and "answers"
     split: "train"
     streaming: false
     categories: ["qa"]
+    verified: true
+
+  - name: "allenai/cosmos_qa"
+    description: "35.6K commonsense-based reading comprehension problems"
+    text_field: "context"  # Also has "question" and "answer0-3"
+    split: "train"
+    streaming: false
+    categories: ["qa"]
+    verified: true
 
   - name: "microsoft/wiki_qa"
     description: "Wikipedia-based question answering dataset"
-    text_field: "answer"
+    text_field: "answer"  # Also has "question" field
     split: "train"
     streaming: false
     categories: ["qa", "general"]
-
-  - name: "squad"
-    description: "Stanford Question Answering Dataset, 100K+ QA pairs"
-    text_field: "context"
-    split: "train"
-    streaming: false
-    categories: ["qa"]
+    verified: true
 
 vietnamese_datasets:
   # Large-scale Vietnamese pretraining datasets
-  - name: "bkai-foundation-models/BKAINewsCorpus"
-    description: "32 million Vietnamese articles, 53GB of clean deduplicated data"
+  - name: "vietgpt/binhvq_news_vi"
+    description: "19.4M Vietnamese news articles, 4.78GB"
     text_field: "text"
     split: "train"
     streaming: true
     categories: ["general", "news"]
+    verified: true
 
   - name: "bkai-foundation-models/NewsCategory"
-    description: "Categorized Vietnamese news dataset"
-    text_field: "text"
+    description: "596K categorized Vietnamese news articles from VnExpress"
+    text_field: "content"  # Also has "title" and "sapo" (summary)
     split: "train"
     streaming: true
     categories: ["general", "news"]
+    verified: true
 
-  - name: "vietgpt/wikipedia_vi"
-    description: "Vietnamese Wikipedia (2025 version)"
+  - name: "wikimedia/wikipedia"
+    description: "Vietnamese Wikipedia (Nov 2023)"
     text_field: "text"
+    config: "20231101.vi"  # Vietnamese Wikipedia from Nov 1, 2023
     split: "train"
     streaming: true
-    categories: ["general"]
+    categories: ["general", "knowledge"]
+    verified: true
+
+  - name: "opendatalab/WanJuan-Vietnamese"
+    description: "280GB+ Vietnamese corpus with 7 major categories"
+    text_field: "content"  # Also has "title" field
+    split: "train"
+    streaming: true
+    categories: ["general", "knowledge"]
+    verified: true
 
   - name: "uitnlp/vietnamese_students_feedback"
-    description: "16K+ Vietnamese sentences with annotations"
+    description: "16K+ Vietnamese sentences with sentiment and topic annotations"
     text_field: "sentence"
     split: "train"
     streaming: false
     categories: ["qa", "feedback"]
+    verified: true
 
-  - name: "PhoGPT/vi_instructions"
-    description: "Vietnamese instruction-following dataset"
-    text_field: "text"
+  - name: "bkai-foundation-models/vi-alpaca"
+    description: "50K Vietnamese instruction-following examples"
+    text_field: "output"  # Also has "instruction" and "input" fields
     split: "train"
     streaming: false
     categories: ["qa", "instructions"]
-
-  # Vietnamese QA and tech datasets
-  - name: "uitnlp/vietnamese_qa"
-    description: "Vietnamese question answering dataset"
-    text_field: "text"
-    split: "train"
-    streaming: false
-    categories: ["qa"]
-
-  - name: "vietgpt/vn_news_corpus"
-    description: "Large Vietnamese news corpus with tech coverage"
-    text_field: "content"
-    split: "train"
-    streaming: true
-    categories: ["tech", "news"]
-
-  - name: "uitnlp/vi_tech_corpus"
-    description: "Vietnamese technology and programming content"
-    text_field: "text"
-    split: "train"
-    streaming: true
-    categories: ["tech", "code"]
+    verified: true
 
 # Filtering configuration
 filtering:
@@ -168,6 +174,12 @@ filtering:
     - "solution"
     - "problem"
     - "explanation"
+    # Vietnamese keywords
+    - "lập trình"
+    - "khoa học"
+    - "công nghệ"
+    - "dữ liệu"
+    - "thuật toán"
 
   # Keywords to EXCLUDE (junk/spam indicators)
   exclude_keywords:

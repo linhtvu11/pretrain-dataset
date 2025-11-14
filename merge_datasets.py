@@ -53,13 +53,16 @@ class DatasetMerger:
         text_field = dataset_info['text_field']
         split = dataset_info.get('split', 'train')
         streaming = dataset_info.get('streaming', True)
+        config = dataset_info.get('config', None)  # Optional config/subset name
 
-        logger.info(f"Loading dataset: {dataset_name} ({language})")
+        logger.info(f"Loading dataset: {dataset_name} ({language})" +
+                   (f" [config: {config}]" if config else ""))
 
         try:
             # Load dataset
             dataset = load_dataset(
                 dataset_name,
+                config if config else None,  # Pass config as second argument
                 split=split,
                 streaming=streaming,
                 trust_remote_code=True

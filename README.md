@@ -14,29 +14,31 @@ A comprehensive toolkit for collecting, cleaning, filtering, and merging Hugging
 
 ## Dataset Collection
 
-### English Datasets (5+)
+**✓ VERIFIED**: All datasets confirmed to exist on HuggingFace (November 2025)
+
+### English Datasets (10 verified)
 
 1. **HuggingFaceFW/fineweb** - 15T tokens of high-quality web data
-2. **allenai/c4** - 750GB Colossal Clean Crawled Corpus
-3. **openwebtext** - Reddit-sourced quality content
-4. **bigcode/the-stack** - 6TB of permissively-licensed source code
-5. **codeparrot/github-code** - Large GitHub code repository
-6. **scientific_papers** - ArXiv and PubMed scientific papers
-7. **taesiri/arxiv_qa** - ArXiv papers as QA pairs
-8. **allenai/cosmos_qa** - 35.6K commonsense QA problems
-9. **microsoft/wiki_qa** - Wikipedia-based QA dataset
-10. **squad** - Stanford Question Answering Dataset
+2. **allenai/c4** (config: en) - 750GB Colossal Clean Crawled Corpus
+3. **Skylion007/openwebtext** - Reddit-sourced quality content
+4. **wikimedia/wikipedia** (config: 20231101.en) - English Wikipedia
+5. **bigcode/the-stack** - 6TB of permissively-licensed source code
+6. **codeparrot/github-code** - 115M code files from GitHub
+7. **armanc/scientific_papers** (config: arxiv) - ArXiv and PubMed papers
+8. **rajpurkar/squad** - Stanford Question Answering Dataset
+9. **allenai/cosmos_qa** - 35.6K commonsense QA problems
+10. **microsoft/wiki_qa** - Wikipedia-based QA dataset
 
-### Vietnamese Datasets (5+)
+### Vietnamese Datasets (6 verified)
 
-1. **bkai-foundation-models/BKAINewsCorpus** - 32M Vietnamese articles, 53GB
-2. **bkai-foundation-models/NewsCategory** - Categorized Vietnamese news
-3. **vietgpt/wikipedia_vi** - Vietnamese Wikipedia (2025)
-4. **uitnlp/vietnamese_students_feedback** - 16K+ annotated sentences
-5. **PhoGPT/vi_instructions** - Vietnamese instruction dataset
-6. **uitnlp/vietnamese_qa** - Vietnamese QA dataset
-7. **vietgpt/vn_news_corpus** - Large Vietnamese news with tech coverage
-8. **uitnlp/vi_tech_corpus** - Vietnamese tech and programming content
+1. **vietgpt/binhvq_news_vi** - 19.4M Vietnamese articles, 4.78GB
+2. **bkai-foundation-models/NewsCategory** - 596K categorized news articles
+3. **wikimedia/wikipedia** (config: 20231101.vi) - Vietnamese Wikipedia
+4. **opendatalab/WanJuan-Vietnamese** - 280GB+ multi-category corpus
+5. **uitnlp/vietnamese_students_feedback** - 16K+ annotated sentences
+6. **bkai-foundation-models/vi-alpaca** - 50K instruction-following examples
+
+**See DATASETS.md and VERIFIED_DATASETS.md for complete details.**
 
 ## Installation
 
