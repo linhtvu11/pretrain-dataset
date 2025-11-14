@@ -1,0 +1,206 @@
+# Configuration file for LLM Pretraining Datasets
+# This file lists datasets suitable for pretraining LLMs with focus on code, tech, science, bio, and QA
+
+english_datasets:
+  # Large-scale web and general text datasets
+  - name: "HuggingFaceFW/fineweb"
+    description: "High-quality web dataset, 15T tokens, deduplicated and filtered"
+    text_field: "text"
+    split: "train"
+    streaming: true
+    categories: ["general", "tech"]
+
+  - name: "allenai/c4"
+    description: "Colossal Clean Crawled Corpus - 750GB of cleaned web text"
+    text_field: "text"
+    split: "train"
+    streaming: true
+    categories: ["general"]
+
+  - name: "openwebtext"
+    description: "Open source recreation of WebText dataset, Reddit links"
+    text_field: "text"
+    split: "train"
+    streaming: true
+    categories: ["general", "qa"]
+
+  # Code datasets
+  - name: "bigcode/the-stack"
+    description: "6TB of permissively-licensed source code, 358 programming languages"
+    text_field: "content"
+    split: "train"
+    streaming: true
+    categories: ["code"]
+
+  - name: "codeparrot/github-code"
+    description: "Large dataset of code from GitHub repositories"
+    text_field: "code"
+    split: "train"
+    streaming: true
+    categories: ["code"]
+
+  # Science and academic datasets
+  - name: "scientific_papers"
+    description: "Scientific papers from ArXiv and PubMed"
+    text_field: "article"
+    split: "train"
+    streaming: true
+    categories: ["science", "bio"]
+
+  - name: "taesiri/arxiv_qa"
+    description: "ArXiv papers formatted as QA pairs"
+    text_field: "text"
+    split: "train"
+    streaming: true
+    categories: ["science", "qa"]
+
+  # Question Answering datasets
+  - name: "allenai/cosmos_qa"
+    description: "35.6K commonsense-based reading comprehension problems"
+    text_field: "context"
+    split: "train"
+    streaming: false
+    categories: ["qa"]
+
+  - name: "microsoft/wiki_qa"
+    description: "Wikipedia-based question answering dataset"
+    text_field: "answer"
+    split: "train"
+    streaming: false
+    categories: ["qa", "general"]
+
+  - name: "squad"
+    description: "Stanford Question Answering Dataset, 100K+ QA pairs"
+    text_field: "context"
+    split: "train"
+    streaming: false
+    categories: ["qa"]
+
+vietnamese_datasets:
+  # Large-scale Vietnamese pretraining datasets
+  - name: "bkai-foundation-models/BKAINewsCorpus"
+    description: "32 million Vietnamese articles, 53GB of clean deduplicated data"
+    text_field: "text"
+    split: "train"
+    streaming: true
+    categories: ["general", "news"]
+
+  - name: "bkai-foundation-models/NewsCategory"
+    description: "Categorized Vietnamese news dataset"
+    text_field: "text"
+    split: "train"
+    streaming: true
+    categories: ["general", "news"]
+
+  - name: "vietgpt/wikipedia_vi"
+    description: "Vietnamese Wikipedia (2025 version)"
+    text_field: "text"
+    split: "train"
+    streaming: true
+    categories: ["general"]
+
+  - name: "uitnlp/vietnamese_students_feedback"
+    description: "16K+ Vietnamese sentences with annotations"
+    text_field: "sentence"
+    split: "train"
+    streaming: false
+    categories: ["qa", "feedback"]
+
+  - name: "PhoGPT/vi_instructions"
+    description: "Vietnamese instruction-following dataset"
+    text_field: "text"
+    split: "train"
+    streaming: false
+    categories: ["qa", "instructions"]
+
+  # Vietnamese QA and tech datasets
+  - name: "uitnlp/vietnamese_qa"
+    description: "Vietnamese question answering dataset"
+    text_field: "text"
+    split: "train"
+    streaming: false
+    categories: ["qa"]
+
+  - name: "vietgpt/vn_news_corpus"
+    description: "Large Vietnamese news corpus with tech coverage"
+    text_field: "content"
+    split: "train"
+    streaming: true
+    categories: ["tech", "news"]
+
+  - name: "uitnlp/vi_tech_corpus"
+    description: "Vietnamese technology and programming content"
+    text_field: "text"
+    split: "train"
+    streaming: true
+    categories: ["tech", "code"]
+
+# Filtering configuration
+filtering:
+  # Minimum and maximum text length (in characters)
+  min_length: 100
+  max_length: 1000000
+
+  # Keywords to KEEP (content related to these will be prioritized)
+  keep_keywords:
+    - "code"
+    - "programming"
+    - "algorithm"
+    - "function"
+    - "class"
+    - "method"
+    - "science"
+    - "research"
+    - "study"
+    - "biology"
+    - "chemistry"
+    - "physics"
+    - "mathematics"
+    - "technology"
+    - "engineering"
+    - "computer"
+    - "software"
+    - "hardware"
+    - "data"
+    - "analysis"
+    - "question"
+    - "answer"
+    - "solution"
+    - "problem"
+    - "explanation"
+
+  # Keywords to EXCLUDE (junk/spam indicators)
+  exclude_keywords:
+    - "subscribe now"
+    - "click here"
+    - "buy now"
+    - "limited offer"
+    - "spam"
+    - "advertisement"
+    - "casino"
+    - "viagra"
+    - "lottery"
+    - "winner"
+    - "claim your prize"
+
+  # Exclude texts with high ratio of these patterns
+  junk_patterns:
+    - "!!!!!+"  # Excessive exclamation
+    - "\\$\\$\\$+"  # Excessive dollar signs
+    - "https?://[^\\s]{200,}"  # Very long URLs
+
+  # Language detection threshold (0-1)
+  language_confidence_threshold: 0.7
+
+  # Deduplication settings
+  deduplication:
+    enabled: true
+    similarity_threshold: 0.85  # Cosine similarity threshold
+
+# Output configuration
+output:
+  dataset_name: "merged_llm_pretrain_dataset"
+  push_to_hub: true
+  hub_repo: "your-username/merged-llm-pretrain"  # Update with your HuggingFace username
+  private: false
+  max_samples_per_dataset: null  # null means no limit, or set a number

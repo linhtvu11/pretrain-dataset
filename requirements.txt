@@ -1,0 +1,18 @@
+# Core dependencies
+datasets>=2.14.0
+transformers>=4.30.0
+huggingface-hub>=0.16.0
+PyYAML>=6.0
+
+# Processing and utilities
+tqdm>=4.65.0
+numpy>=1.24.0
+pandas>=2.0.0
+
+# Optional but recommended
+torch>=2.0.0
+accelerate>=0.20.0
+
+# For Vietnamese language processing (optional)
+underthesea>=6.0.0
+py_vncorenlp>=1.0.0
