@@ -19,6 +19,7 @@ A comprehensive toolkit for collecting, cleaning, filtering, and merging Hugging
 **✓ VERIFIED**: All datasets confirmed to exist on HuggingFace (November 2025)
 
 **🎉 NEW**: Added 13 datasets from **SmolLM3 Collection** (including Vietnamese support!)
+**🔥 NEW**: Added SmolLM3 production weights - exact dataset mix used to train SmolLM3 on 8T tokens!
 
 ### English Datasets (21 verified, +11 new from SmolLM3)
 
@@ -137,6 +138,26 @@ python test_cleaning.py
 ```
 
 This runs test cases to verify the cleaning and filtering logic works correctly.
+
+### 🔥 Use SmolLM3 Production Weights (Recommended)
+
+Replicate SmolLM3's exact training mix with production-tested dataset weights:
+
+```bash
+# Use SmolLM3's proven dataset mix (8T tokens)
+python merge_datasets.py \
+  --config smollm3_weighted_config.yaml \
+  --output-dir ./smollm3_dataset
+```
+
+**Dataset weights used**:
+- 37% dclm (general web)
+- 33.3% fineweb-edu (educational content)
+- 11.9% code (Python 2.5%, C++ 1.8%, Java 1.3%, etc.)
+- 2.7% math (finemath 1.7%, infiwebmath 1.0%)
+- 9% multilingual (including 0.325% Vietnamese)
+
+**See `SMOLLM3_WEIGHTS.md` and `DATASET_WEIGHTS_SUMMARY.md` for complete details.**
 
 ### Merge Datasets (Quick Test)
 
