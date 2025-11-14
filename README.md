@@ -5,12 +5,14 @@ A comprehensive toolkit for collecting, cleaning, filtering, and merging Hugging
 ## Features
 
 - **Multi-language Support**: Includes both English and Vietnamese datasets
+- **Bilingual Filtering**: Complete English and Vietnamese spam/junk detection (75 keep keywords, 54 exclude keywords)
 - **Smart Filtering**: Excludes junk/spam content while preserving technical, scientific, and code-related text
 - **Automatic Cleaning**: Removes HTML tags, normalizes Unicode, cleans URLs and whitespace
 - **Deduplication**: Prevents duplicate content using hash-based matching
 - **Flexible Configuration**: Easy-to-modify YAML configuration for dataset selection
 - **HuggingFace Integration**: Direct push to HuggingFace Hub
 - **Comprehensive Logging**: Detailed statistics and progress tracking
+- **Tested**: 100% test pass rate (21/21 tests - English and Vietnamese)
 
 ## Dataset Collection
 
@@ -71,23 +73,40 @@ filtering:
   min_length: 100          # Minimum text length in characters
   max_length: 1000000      # Maximum text length
 
-  keep_keywords:           # Content with these keywords is prioritized
+  keep_keywords:           # Content with these keywords is prioritized (75 total)
+    # English (32): code, programming, science, research, algorithm...
     - code
     - programming
     - science
     - research
-    # ... more keywords
 
-  exclude_keywords:        # Content with these is filtered out
+    # Vietnamese (43): lập trình, khoa học, công nghệ, dữ liệu...
+    - "lập trình"
+    - "khoa học"
+    - "công nghệ"
+    - "dữ liệu"
+
+  exclude_keywords:        # Content with these is filtered out (54 total)
+    # English spam (24): subscribe now, buy now, click here...
     - "subscribe now"
     - "click here"
     - spam
-    # ... more keywords
+
+    # Vietnamese spam (30): đăng ký ngay, mua ngay, lừa đảo...
+    - "đăng ký ngay"
+    - "mua ngay"
+    - "lừa đảo"
+
+  junk_patterns:           # Regex patterns for spam detection (9 patterns)
+    - "!!!!!+"             # Excessive punctuation
+    - "(?i)(mua|đăng\\s*ký).*ngay.*[!]{2,}"  # Vietnamese spam
 
   deduplication:
     enabled: true
     similarity_threshold: 0.85
 ```
+
+**See FILTERING.md for complete bilingual filtering documentation.**
 
 ## Usage
 
