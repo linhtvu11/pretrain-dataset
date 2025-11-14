@@ -3,7 +3,58 @@
 # This file lists datasets suitable for pretraining LLMs with focus on code, tech, science, bio, and QA
 
 english_datasets:
+  # ===== SmolLM3 Collection - High Quality Pretraining Datasets =====
+
   # Large-scale web and general text datasets
+  - name: "HuggingFaceFW/fineweb-edu"
+    description: "Educational web content filtered from FineWeb, 3.5B rows"
+    text_field: "text"
+    split: "train"
+    streaming: true
+    categories: ["general", "education"]
+    verified: true
+    source: "SmolLM3"
+
+  - name: "HuggingFaceFW/fineweb-2"
+    description: "Multilingual web dataset (1868 languages), English subset"
+    text_field: "text"
+    config: "eng_Latn"  # English in Latin script
+    split: "train"
+    streaming: true
+    categories: ["general", "tech"]
+    verified: true
+    source: "SmolLM3"
+
+  - name: "epfml/FineWeb2-HQ"
+    description: "High-quality filtered FineWeb2 (top 10%), English subset"
+    text_field: "text"
+    config: "eng_Latn"  # English in Latin script
+    split: "train"
+    streaming: true
+    categories: ["general", "tech"]
+    verified: true
+    source: "SmolLM3"
+
+  - name: "HuggingFaceTB/smollm-corpus"
+    description: "SmolLM corpus: cosmopedia-v2 (39M synthetic educational)"
+    text_field: "text"
+    config: "cosmopedia-v2"
+    split: "train"
+    streaming: true
+    categories: ["general", "education", "synthetic"]
+    verified: true
+    source: "SmolLM3"
+
+  - name: "HuggingFaceTB/smollm-corpus"
+    description: "SmolLM corpus: fineweb-edu-dedup (190M educational web)"
+    text_field: "text"
+    config: "fineweb-edu-dedup"
+    split: "train"
+    streaming: true
+    categories: ["general", "education"]
+    verified: true
+    source: "SmolLM3"
+
   - name: "HuggingFaceFW/fineweb"
     description: "High-quality web dataset, 15T tokens, deduplicated and filtered"
     text_field: "text"
@@ -39,6 +90,44 @@ english_datasets:
     verified: true
 
   # Code datasets
+  - name: "bigcode/the-stack-v2"
+    description: "67.5TB of code, 658 languages, 3.28B files (v2 - much larger than v1)"
+    text_field: "text"  # Note: Uses blob_id, requires special handling
+    split: "train"
+    streaming: true
+    categories: ["code"]
+    verified: true
+    source: "SmolLM3"
+    note: "Requires blob_id download from Software Heritage"
+
+  - name: "HuggingFaceTB/stack-edu"
+    description: "Educational code from Stack v2, 125B tokens, 167M rows"
+    text_field: "text"
+    split: "train"
+    streaming: true
+    categories: ["code", "education"]
+    verified: true
+    source: "SmolLM3"
+
+  - name: "HuggingFaceTB/smollm-corpus"
+    description: "SmolLM corpus: python-edu (7.68M Python educational code)"
+    text_field: "text"
+    config: "python-edu"
+    split: "train"
+    streaming: true
+    categories: ["code", "education"]
+    verified: true
+    source: "SmolLM3"
+
+  - name: "HuggingFaceTB/issues-kaggle-notebooks"
+    description: "GitHub issues (15.5M) + Kaggle notebooks (580k)"
+    text_field: "text"
+    split: "train"
+    streaming: true
+    categories: ["code", "documentation"]
+    verified: true
+    source: "SmolLM3"
+
   - name: "bigcode/the-stack"
     description: "6TB of permissively-licensed source code, 358 programming languages"
     text_field: "content"
@@ -55,7 +144,16 @@ english_datasets:
     categories: ["code"]
     verified: true
 
-  # Science and academic datasets
+  # Math and science datasets
+  - name: "HuggingFaceTB/finemath"
+    description: "Mathematical educational content, 48.3M rows"
+    text_field: "text"
+    split: "train"
+    streaming: true
+    categories: ["math", "education"]
+    verified: true
+    source: "SmolLM3"
+
   - name: "armanc/scientific_papers"
     description: "Scientific papers from ArXiv and PubMed"
     text_field: "article"  # Also has "abstract" field
@@ -91,6 +189,28 @@ english_datasets:
     verified: true
 
 vietnamese_datasets:
+  # ===== SmolLM3 Collection - Multilingual Datasets with Vietnamese =====
+
+  - name: "HuggingFaceFW/fineweb-2"
+    description: "Multilingual web dataset, Vietnamese subset (vie_Latn)"
+    text_field: "text"
+    config: "vie_Latn"  # Vietnamese in Latin script
+    split: "train"
+    streaming: true
+    categories: ["general", "tech"]
+    verified: true
+    source: "SmolLM3"
+
+  - name: "epfml/FineWeb2-HQ"
+    description: "High-quality filtered FineWeb2 (top 10%), Vietnamese subset (4M rows)"
+    text_field: "text"
+    config: "vie_Latn"  # Vietnamese in Latin script
+    split: "train"
+    streaming: true
+    categories: ["general", "tech"]
+    verified: true
+    source: "SmolLM3"
+
   # Large-scale Vietnamese pretraining datasets
   - name: "vietgpt/binhvq_news_vi"
     description: "19.4M Vietnamese news articles, 4.78GB"

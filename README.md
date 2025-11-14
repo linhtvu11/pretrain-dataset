@@ -18,29 +18,50 @@ A comprehensive toolkit for collecting, cleaning, filtering, and merging Hugging
 
 **✓ VERIFIED**: All datasets confirmed to exist on HuggingFace (November 2025)
 
-### English Datasets (10 verified)
+**🎉 NEW**: Added 13 datasets from **SmolLM3 Collection** (including Vietnamese support!)
+**🔥 NEW**: Added SmolLM3 production weights - exact dataset mix used to train SmolLM3 on 8T tokens!
 
-1. **HuggingFaceFW/fineweb** - 15T tokens of high-quality web data
-2. **allenai/c4** (config: en) - 750GB Colossal Clean Crawled Corpus
-3. **Skylion007/openwebtext** - Reddit-sourced quality content
-4. **wikimedia/wikipedia** (config: 20231101.en) - English Wikipedia
-5. **bigcode/the-stack** - 6TB of permissively-licensed source code
-6. **codeparrot/github-code** - 115M code files from GitHub
-7. **armanc/scientific_papers** (config: arxiv) - ArXiv and PubMed papers
-8. **rajpurkar/squad** - Stanford Question Answering Dataset
-9. **allenai/cosmos_qa** - 35.6K commonsense QA problems
-10. **microsoft/wiki_qa** - Wikipedia-based QA dataset
+### English Datasets (21 verified, +11 new from SmolLM3)
 
-### Vietnamese Datasets (6 verified)
+**From SmolLM3 Collection (11 new):**
+1. **HuggingFaceFW/fineweb-edu** - 3.5B educational web content
+2. **HuggingFaceFW/fineweb-2** (config: eng_Latn) - Multilingual web (1868 languages)
+3. **epfml/FineWeb2-HQ** (config: eng_Latn) - Top 10% quality filtered (380M rows)
+4. **HuggingFaceTB/smollm-corpus** (cosmopedia-v2) - 39M synthetic educational
+5. **HuggingFaceTB/smollm-corpus** (fineweb-edu-dedup) - 190M deduplicated educational
+6. **HuggingFaceTB/smollm-corpus** (python-edu) - 7.68M Python educational code
+7. **bigcode/the-stack-v2** - 67.5TB code, 658 languages (v1: 6.4TB → v2: 67.5TB!)
+8. **HuggingFaceTB/stack-edu** - 125B tokens educational code
+9. **HuggingFaceTB/finemath** - 48.3M mathematical content
+10. **HuggingFaceTB/issues-kaggle-notebooks** - 16M GitHub issues + Kaggle notebooks
 
-1. **vietgpt/binhvq_news_vi** - 19.4M Vietnamese articles, 4.78GB
-2. **bkai-foundation-models/NewsCategory** - 596K categorized news articles
-3. **wikimedia/wikipedia** (config: 20231101.vi) - Vietnamese Wikipedia
-4. **opendatalab/WanJuan-Vietnamese** - 280GB+ multi-category corpus
-5. **uitnlp/vietnamese_students_feedback** - 16K+ annotated sentences
-6. **bkai-foundation-models/vi-alpaca** - 50K instruction-following examples
+**Existing Datasets (10):**
+11. **HuggingFaceFW/fineweb** - 15T tokens high-quality web
+12. **allenai/c4** (config: en) - 750GB clean web text
+13. **Skylion007/openwebtext** - Reddit-sourced quality content
+14. **wikimedia/wikipedia** (config: 20231101.en) - English Wikipedia
+15. **bigcode/the-stack** - 6TB code (v1)
+16. **codeparrot/github-code** - 115M code files from GitHub
+17. **armanc/scientific_papers** (config: arxiv) - ArXiv and PubMed papers
+18. **rajpurkar/squad** - Stanford Question Answering Dataset
+19. **allenai/cosmos_qa** - 35.6K commonsense QA
+20. **microsoft/wiki_qa** - Wikipedia-based QA
 
-**See DATASETS.md and VERIFIED_DATASETS.md for complete details.**
+### Vietnamese Datasets (8 verified, +2 new from SmolLM3) 🇻🇳
+
+**From SmolLM3 Collection (2 new):**
+1. **HuggingFaceFW/fineweb-2** (config: vie_Latn) - 🎉 High-quality Vietnamese web data
+2. **epfml/FineWeb2-HQ** (config: vie_Latn) - 🎉 4M top 10% quality Vietnamese web
+
+**Existing Datasets (6):**
+3. **vietgpt/binhvq_news_vi** - 19.4M Vietnamese articles, 4.78GB
+4. **bkai-foundation-models/NewsCategory** - 596K categorized news
+5. **wikimedia/wikipedia** (config: 20231101.vi) - Vietnamese Wikipedia
+6. **opendatalab/WanJuan-Vietnamese** - 280GB+ multi-category corpus
+7. **uitnlp/vietnamese_students_feedback** - 16K+ annotated sentences
+8. **bkai-foundation-models/vi-alpaca** - 50K instruction-following examples
+
+**See DATASETS.md, VERIFIED_DATASETS.md, and SMOLLM3_DATASETS.md for complete details.**
 
 ## Installation
 
@@ -117,6 +138,26 @@ python test_cleaning.py
 ```
 
 This runs test cases to verify the cleaning and filtering logic works correctly.
+
+### 🔥 Use SmolLM3 Production Weights (Recommended)
+
+Replicate SmolLM3's exact training mix with production-tested dataset weights:
+
+```bash
+# Use SmolLM3's proven dataset mix (8T tokens)
+python merge_datasets.py \
+  --config smollm3_weighted_config.yaml \
+  --output-dir ./smollm3_dataset
+```
+
+**Dataset weights used**:
+- 37% dclm (general web)
+- 33.3% fineweb-edu (educational content)
+- 11.9% code (Python 2.5%, C++ 1.8%, Java 1.3%, etc.)
+- 2.7% math (finemath 1.7%, infiwebmath 1.0%)
+- 9% multilingual (including 0.325% Vietnamese)
+
+**See `SMOLLM3_WEIGHTS.md` and `DATASET_WEIGHTS_SUMMARY.md` for complete details.**
 
 ### Merge Datasets (Quick Test)
 
