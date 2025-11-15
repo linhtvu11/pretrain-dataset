@@ -136,27 +136,26 @@ class SmolLM3DataTrovePipeline:
         print(f"    Sample ratio: {sample_ratio:.4f}")
 
         # HuggingFace dataset reader
-        # Note: streaming is a parameter of HuggingFaceDatasetReader, not in dataset_options
-        reader_kwargs = {
-            "dataset": dataset_name,
-            "text_key": text_field,
-            "id_key": None,  # Auto-generate IDs
-            "streaming": True,  # Enable streaming mode
-            "default_metadata": {
-                "source": dataset_name,
-                "config": config or "default",
-                "weight": dataset_info.get('weight', 0.0),
-            }
-        }
-
-        # Add config/name if specified (for dataset subsets like vie_Latn)
+        # Note: streaming is a direct parameter to HuggingFaceDatasetReader
+        # split and name go in dataset_options which are passed to load_dataset
+        dataset_opts = {"split": split}
         if config:
-            reader_kwargs["name"] = config
+            dataset_opts["name"] = config
 
-        # Add split
-        reader_kwargs["split"] = split
-
-        pipeline.append(HuggingFaceDatasetReader(**reader_kwargs))
+        pipeline.append(
+            HuggingFaceDatasetReader(
+                dataset=dataset_name,
+                streaming=True,  # Direct parameter to HuggingFaceDatasetReader
+                dataset_options=dataset_opts,  # Options passed to load_dataset
+                text_key=text_field,
+                id_key=None,  # Auto-generate IDs
+                default_metadata={
+                    "source": dataset_name,
+                    "config": config or "default",
+                    "weight": dataset_info.get('weight', 0.0),
+                }
+            )
+        )
 
         # 2. Sampling based on weight (if sample_ratio < 1.0)
         if sample_ratio < 1.0:
