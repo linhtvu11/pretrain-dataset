@@ -161,61 +161,44 @@ class TwoStageDatasetProcessor:
             logger.error(f"  Failed to load dataset: {e}")
             return
 
-        # Sample and save
+        # Optimized sampling using HuggingFace's shuffle + take
+        # This is MUCH faster than manual reservoir sampling
         logger.info(f"  Sampling {target_samples:,} documents...")
 
+        # Shuffle with large buffer for good randomness, then take exact amount needed
+        # Buffer size: larger = better randomness, but more memory
+        # 100K buffer is a good balance
+        buffer_size = min(100000, target_samples * 10)
+        shuffled_dataset = dataset.shuffle(seed=seed, buffer_size=buffer_size)
+        sampled_dataset = shuffled_dataset.take(target_samples * 2)  # Take 2x to account for filtered samples
+
         collected = 0
-        total_seen = 0
-
-        # Use reservoir sampling for streaming datasets
-        # This ensures uniform random sampling
-        reservoir = []
-
         with gzip.open(output_file, 'wt', encoding='utf-8') as f:
-            for example in tqdm(dataset, desc=f"  Sampling {dataset_name}", total=target_samples):
-                total_seen += 1
-
+            for example in tqdm(sampled_dataset, desc=f"  Sampling {dataset_name}", total=target_samples):
                 # Extract text
                 text = self._extract_text(example, text_field)
                 if not text:
                     continue
 
-                # Reservoir sampling
-                if len(reservoir) < target_samples:
-                    reservoir.append({
-                        'text': text,
-                        'metadata': {
-                            'source': dataset_name,
-                            'config': config or 'default',
-                            'weight': dataset_info.get('weight', 0),
-                            'original_index': total_seen
-                        }
-                    })
-                else:
-                    # Random replacement
-                    j = random.randint(0, total_seen - 1)
-                    if j < target_samples:
-                        reservoir[j] = {
-                            'text': text,
-                            'metadata': {
-                                'source': dataset_name,
-                                'config': config or 'default',
-                                'weight': dataset_info.get('weight', 0),
-                                'original_index': total_seen
-                            }
-                        }
+                # Save document
+                doc = {
+                    'text': text,
+                    'metadata': {
+                        'source': dataset_name,
+                        'config': config or 'default',
+                        'weight': dataset_info.get('weight', 0),
+                        'original_index': collected
+                    }
+                }
+                f.write(json.dumps(doc, ensure_ascii=False) + '\n')
+                collected += 1
 
-                # Early stop if we've seen enough
-                if total_seen >= target_samples * 10:  # Sample from 10x to ensure randomness
+                # Stop when we have enough
+                if collected >= target_samples:
                     break
 
-            # Write reservoir to file
-            logger.info(f"  Writing {len(reservoir):,} samples to disk...")
-            for doc in reservoir:
-                f.write(json.dumps(doc, ensure_ascii=False) + '\n')
-
         logger.info(f"  ✓ Saved: {output_file}")
-        logger.info(f"  Collected: {len(reservoir):,} samples from {total_seen:,} seen")
+        logger.info(f"  Collected: {collected:,} samples")
 
     def _extract_text(self, example: Dict, text_field: str) -> Optional[str]:
         """Extract text from example using field name"""
