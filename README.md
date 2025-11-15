@@ -27,15 +27,22 @@ python datatrove_simple_example.py simple
 
 # Run SmolLM3 Stage 1 pipeline (test with 5 datasets)
 python smollm3_stage1_datatrove_pipeline.py --max-datasets 5
+
+# Push processed data to HuggingFace Hub
+python push_datatrove_to_hub.py \
+  --input-folder ./datatrove_output/stage1 \
+  --repo-name your-username/smollm3-stage1-pretrain
 ```
 
 **See [DATATROVE_GUIDE.md](DATATROVE_GUIDE.md) for complete documentation.**
+**See [PUSH_TO_HUB_GUIDE.md](PUSH_TO_HUB_GUIDE.md) for pushing to HuggingFace Hub.**
 
 ---
 
 ## Features
 
 - **🆕 DataTrove Pipeline**: Production-grade processing like SmolLM3 (Gopher filters, sentence deduplication, parallel processing)
+- **🆕 One-Click Hub Upload**: Push processed datasets directly to HuggingFace Hub
 - **Multi-language Support**: Includes both English and Vietnamese datasets
 - **Weighted Sampling**: Production-tested dataset weights from SmolLM3 (exact 3-stage training mix)
 - **Bilingual Filtering**: Complete English and Vietnamese spam/junk detection (75 keep keywords, 54 exclude keywords)
@@ -46,6 +53,25 @@ python smollm3_stage1_datatrove_pipeline.py --max-datasets 5
 - **HuggingFace Integration**: Direct push to HuggingFace Hub
 - **Comprehensive Logging**: Detailed statistics and progress tracking
 - **Tested**: 100% test pass rate (21/21 tests - English and Vietnamese)
+
+## Complete Workflow
+
+```bash
+# 1. Process data with DataTrove (production-grade)
+python smollm3_stage1_datatrove_pipeline.py \
+  --config smollm3_weighted_config.yaml \
+  --output-folder ./datatrove_output/stage1 \
+  --tasks 10 --workers 4
+
+# 2. Push to HuggingFace Hub
+python push_datatrove_to_hub.py \
+  --input-folder ./datatrove_output/stage1 \
+  --repo-name your-username/smollm3-stage1-pretrain
+
+# 3. Use in training
+# Your processed dataset is now ready at:
+# https://huggingface.co/datasets/your-username/smollm3-stage1-pretrain
+```
 
 ## Dataset Collection
 
