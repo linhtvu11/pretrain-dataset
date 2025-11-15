@@ -1,0 +1,42 @@
+# DataTrove dependencies for LLM pretraining data processing
+# Based on HuggingFace's SmolLM3 data processing pipeline
+
+# Core datatrove with all features
+datatrove[all]>=0.3.0
+
+# Additional dependencies for specific features
+# Note: datatrove[all] includes most of these, but listing explicitly for clarity
+
+# For text extraction from HTML
+trafilatura>=1.6.0
+
+# For language detection
+fasttext-wheel>=0.9.2
+langdetect>=1.0.9
+
+# For deduplication
+simhash>=2.1.2
+
+# For tokenization (if needed)
+tokenizers>=0.15.0
+
+# For parallel processing
+tqdm>=4.66.0
+multiprocess>=0.70.0
+
+# For data handling
+pyarrow>=14.0.0
+datasets>=2.16.0
+
+# For cloud storage (S3, etc.)
+s3fs>=2023.12.0
+fsspec>=2023.12.0
+
+# For SLURM cluster execution (optional)
+# submitit>=1.5.0  # Uncomment if using SLURM
+
+# YAML for config
+pyyaml>=6.0
+
+# Existing requirements
+numpy>=1.24.0

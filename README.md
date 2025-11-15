@@ -2,14 +2,46 @@
 
 A comprehensive toolkit for collecting, cleaning, filtering, and merging HuggingFace datasets suitable for Large Language Model (LLM) pretraining. This project focuses on high-quality text data related to code, technology, science, biology, and question-answering.
 
+## 🆕 NEW: Production DataTrove Pipeline
+
+**Now includes production-grade data processing using HuggingFace's DataTrove** - the same tool used to create SmolLM3's training data!
+
+### Two Processing Options
+
+| Feature | Custom Scripts | **DataTrove Pipeline** |
+|---------|---------------|----------------------|
+| **Best for** | Experimentation (<1M docs) | **Production training (>1M docs)** |
+| **Scale** | Limited by memory | **Unlimited (streaming)** |
+| **Quality Filters** | Basic keyword matching | **Production-tested (Gopher, C4, FineWeb)** |
+| **Deduplication** | Simple hash-based | **Advanced (MinHash, sentence-level)** |
+| **Used by** | Our project | **HuggingFace/SmolLM3** |
+
+**Quick Start with DataTrove:**
+
+```bash
+# Install DataTrove
+pip install -r requirements_datatrove.txt
+
+# Test with simple example
+python datatrove_simple_example.py simple
+
+# Run SmolLM3 Stage 1 pipeline (test with 5 datasets)
+python smollm3_stage1_datatrove_pipeline.py --max-datasets 5
+```
+
+**See [DATATROVE_GUIDE.md](DATATROVE_GUIDE.md) for complete documentation.**
+
+---
+
 ## Features
 
+- **🆕 DataTrove Pipeline**: Production-grade processing like SmolLM3 (Gopher filters, sentence deduplication, parallel processing)
 - **Multi-language Support**: Includes both English and Vietnamese datasets
 - **Weighted Sampling**: Production-tested dataset weights from SmolLM3 (exact 3-stage training mix)
 - **Bilingual Filtering**: Complete English and Vietnamese spam/junk detection (75 keep keywords, 54 exclude keywords)
 - **Smart Filtering**: Excludes junk/spam content while preserving technical, scientific, and code-related text
 - **Automatic Cleaning**: Removes HTML tags, normalizes Unicode, cleans URLs and whitespace
-- **Deduplication**: Prevents duplicate content using hash-based matching
+- **Deduplication**: Hash-based (custom) or advanced (DataTrove: MinHash, sentence-level)
 - **Flexible Configuration**: Easy-to-modify YAML configuration for dataset selection
 - **HuggingFace Integration**: Direct push to HuggingFace Hub
 - **Comprehensive Logging**: Detailed statistics and progress tracking
