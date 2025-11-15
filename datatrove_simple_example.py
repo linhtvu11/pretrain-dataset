@@ -24,10 +24,8 @@ def simple_example():
         # 1. Read from HuggingFace dataset
         HuggingFaceDatasetReader(
             dataset="Skylion007/openwebtext",  # Small public dataset
-            dataset_options={
-                "split": "train",
-                "streaming": True,
-            },
+            split="train",
+            streaming=True,  # Direct parameter, not in dataset_options
             text_key="text",
             default_metadata={"source": "openwebtext"},
         ),
@@ -80,10 +78,8 @@ def vietnamese_example():
         # Read Vietnamese news dataset
         HuggingFaceDatasetReader(
             dataset="vietgpt/binhvq_news_vi",
-            dataset_options={
-                "split": "train",
-                "streaming": True,
-            },
+            split="train",
+            streaming=True,  # Direct parameter
             text_key="text",
             default_metadata={"source": "vietnamese_news"},
         ),
@@ -133,11 +129,9 @@ def multilingual_example():
     pipeline_en = [
         HuggingFaceDatasetReader(
             dataset="HuggingFaceFW/fineweb-2",
-            dataset_options={
-                "name": "eng_Latn",  # English in Latin script
-                "split": "train",
-                "streaming": True,
-            },
+            name="eng_Latn",  # English in Latin script - direct parameter
+            split="train",
+            streaming=True,  # Direct parameter
             text_key="text",
             default_metadata={"source": "fineweb2", "lang": "en"},
         ),
