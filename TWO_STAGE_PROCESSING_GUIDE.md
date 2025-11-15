@@ -1,8 +1,8 @@
-# Two-Stage Dataset Processing Guide
+# Three-Stage Dataset Processing Guide
 
-This guide explains the improved two-stage approach for dataset processing.
+This guide explains the improved three-stage approach for dataset processing.
 
-## Why Two Stages?
+## Why Three Stages?
 
 ### Old Approach (One-Stage)
 ```
@@ -13,14 +13,16 @@ Download → Clean → Save ❌
 - Wastes bandwidth
 - Slow iteration
 
-### New Approach (Two-Stage)
+### New Approach (Three-Stage)
 ```
-Stage 1: Download → Sample by weight → Save raw  ✅
-Stage 2: Load raw → Clean/filter → Save cleaned  ✅
+Stage 1: Download → Sample by weight → Save raw        ✅
+Stage 2: Load raw → Clean/filter → Save cleaned        ✅
+Stage 3: Combine all → Push to HuggingFace Hub         ✅
 ```
 - Download once, clean many times
 - Inspect raw data before cleaning
 - Fast iteration on cleaning logic
+- Combine and publish to HuggingFace Hub
 - Saves bandwidth and time
 
 ## Quick Start
@@ -76,6 +78,41 @@ python merge_datasets_two_stage.py \
 - Config
 - All original metadata
 
+### Stage 3: Combine and Push to Hub
+
+```bash
+python merge_datasets_two_stage.py \
+  --stage 3 \
+  --cleaned-folder ./cleaned_data \
+  --repo-id username/my-pretrain-dataset \
+  --private \
+  --train-test-split 0.1
+```
+
+**What it does**:
+1. Loads all cleaned data from `./cleaned_data/`
+2. Combines all datasets into a single HuggingFace Dataset
+3. Shows statistics by source dataset
+4. Shuffles for better train/test distribution
+5. Splits into train/test (default 90%/10%, use `--train-test-split 0` to disable)
+6. Pushes to HuggingFace Hub
+
+**Output Dataset Features**:
+- `text`: The cleaned text content
+- `source`: Original dataset name
+- `config`: Dataset configuration used
+- `weight`: Weight used for sampling
+
+**Parameters**:
+- `--repo-id`: Required. Your HuggingFace repo (e.g., `username/dataset-name`)
+- `--private`: Optional. Make dataset private (default: public)
+- `--train-test-split`: Optional. Test split ratio (default: 0.1 = 10% test, use 0 to disable)
+- `--max-shard-size`: Optional. Max shard size for upload (default: "500MB")
+
+**Requirements**:
+- Must be logged in: `huggingface-cli login`
+- Repository will be created automatically if it doesn't exist
+
 ## Usage Examples
 
 ### Example 1: Quick Test (10,000 samples)
@@ -92,6 +129,13 @@ python merge_datasets_two_stage.py \
   --stage 2 \
   --raw-folder ./test_raw \
   --cleaned-folder ./test_cleaned
+
+# Stage 3: Push to Hub
+python merge_datasets_two_stage.py \
+  --stage 3 \
+  --cleaned-folder ./test_cleaned \
+  --repo-id username/test-dataset \
+  --train-test-split 0.1
 ```
 
 Time: ~5-10 minutes total
@@ -110,6 +154,13 @@ python merge_datasets_two_stage.py \
   --stage 2 \
   --raw-folder ./raw_1M \
   --cleaned-folder ./cleaned_1M
+
+# Stage 3: Push to Hub (may take 5-10 minutes)
+python merge_datasets_two_stage.py \
+  --stage 3 \
+  --cleaned-folder ./cleaned_1M \
+  --repo-id username/pretrain-1M \
+  --train-test-split 0.1
 ```
 
 Time: ~1-2 hours total
@@ -128,9 +179,53 @@ python merge_datasets_two_stage.py \
   --stage 2 \
   --raw-folder ./raw_10M \
   --cleaned-folder ./cleaned_10M
+
+# Stage 3: Push to Hub (large dataset may take 30-60 minutes)
+python merge_datasets_two_stage.py \
+  --stage 3 \
+  --cleaned-folder ./cleaned_10M \
+  --repo-id username/pretrain-10M \
+  --train-test-split 0.05 \
+  --max-shard-size "1GB"
 ```
 
 Time: Several hours to a day
+
+### Example 4: Complete Workflow (All Three Stages)
+
+```bash
+# Login to HuggingFace first
+huggingface-cli login
+
+# Stage 1: Download 100K samples with SmolLM3 weights
+python merge_datasets_two_stage.py \
+  --stage 1 \
+  --config smollm3_weighted_config.yaml \
+  --target-samples 100000 \
+  --raw-folder ./my_dataset_raw \
+  --seed 42
+
+# Stage 2: Clean and filter
+python merge_datasets_two_stage.py \
+  --stage 2 \
+  --config smollm3_weighted_config.yaml \
+  --raw-folder ./my_dataset_raw \
+  --cleaned-folder ./my_dataset_cleaned
+
+# Stage 3: Push to HuggingFace Hub
+python merge_datasets_two_stage.py \
+  --stage 3 \
+  --cleaned-folder ./my_dataset_cleaned \
+  --repo-id your-username/smollm3-pretrain-100k \
+  --train-test-split 0.1 \
+  --private
+```
+
+**Result**:
+- Dataset available at: `https://huggingface.co/datasets/your-username/smollm3-pretrain-100k`
+- Train split: ~90K samples
+- Test split: ~10K samples
+- Features: text, source, config, weight
 
 ## How Sampling Works
 

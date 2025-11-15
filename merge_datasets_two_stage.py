@@ -1,13 +1,15 @@
 """
-Two-Stage Dataset Processing for LLM Pretraining
+Three-Stage Dataset Processing for LLM Pretraining
 
 Stage 1: Download and sample datasets by weight → Save raw data locally
 Stage 2: Load raw data → Clean and filter → Save processed data
+Stage 3: Combine all cleaned data → Push to HuggingFace Hub
 
 This approach allows you to:
 - Download once, clean multiple times with different parameters
 - Inspect raw data before cleaning
 - Iterate on cleaning logic without re-downloading
+- Combine and publish your processed dataset to HuggingFace Hub
 - Save bandwidth and time
 """
 
@@ -18,7 +20,7 @@ import yaml
 import argparse
 import random
 from typing import Dict, List, Optional
-from datasets import load_dataset
+from datasets import load_dataset, Dataset, DatasetDict
 from tqdm import tqdm
 import logging
 
@@ -31,7 +33,7 @@ logger = logging.getLogger(__name__)
 
 
 class TwoStageDatasetProcessor:
-    """Two-stage dataset processing: Download → Clean"""
+    """Three-stage dataset processing: Download → Clean → Push to Hub"""
 
     def __init__(self, config_path: str = 'smollm3_weighted_config.yaml'):
         """Initialize with configuration"""
@@ -331,18 +333,145 @@ class TwoStageDatasetProcessor:
 
         return processed, kept
 
+    def stage3_combine_and_push(
+        self,
+        input_folder: str = './cleaned_data',
+        repo_id: str = None,
+        private: bool = False,
+        train_test_split: float = 0.1,
+        max_shard_size: str = "500MB"
+    ):
+        """
+        Stage 3: Combine all cleaned datasets and push to HuggingFace Hub
+
+        Args:
+            input_folder: Where cleaned data is stored
+            repo_id: HuggingFace Hub repository ID (e.g., 'username/dataset-name')
+            private: Whether to make the dataset private
+            train_test_split: Fraction for test split (0.0 to disable, 0.1 = 10% test)
+            max_shard_size: Maximum shard size for upload (e.g., "500MB", "1GB")
+        """
+        if not repo_id:
+            raise ValueError("repo_id is required for Stage 3. Use --repo-id argument.")
+
+        logger.info("\n" + "="*80)
+        logger.info("STAGE 3: Combine and Push to HuggingFace Hub")
+        logger.info("="*80)
+        logger.info(f"Input folder: {input_folder}")
+        logger.info(f"Repository: {repo_id}")
+        logger.info(f"Private: {private}")
+        logger.info(f"Train/Test split: {train_test_split if train_test_split > 0 else 'disabled'}")
+
+        # Find all cleaned data files
+        cleaned_files = []
+        for root, dirs, files in os.walk(input_folder):
+            for file in files:
+                if file.endswith('.jsonl.gz') or file.endswith('.jsonl'):
+                    cleaned_files.append(os.path.join(root, file))
+
+        if not cleaned_files:
+            logger.error(f"No cleaned data files found in {input_folder}")
+            return
+
+        logger.info(f"\nFound {len(cleaned_files)} cleaned data files")
+
+        # Load all documents
+        logger.info("Loading all documents...")
+        all_documents = []
+        source_stats = {}
+
+        for file_path in tqdm(cleaned_files, desc="Loading files"):
+            if file_path.endswith('.gz'):
+                f = gzip.open(file_path, 'rt', encoding='utf-8')
+            else:
+                f = open(file_path, 'r', encoding='utf-8')
+
+            try:
+                for line in f:
+                    if not line.strip():
+                        continue
+                    try:
+                        doc = json.loads(line)
+                        all_documents.append(doc)
+
+                        # Track source statistics
+                        source = doc.get('metadata', {}).get('source', 'unknown')
+                        source_stats[source] = source_stats.get(source, 0) + 1
+
+                    except json.JSONDecodeError:
+                        continue
+            finally:
+                f.close()
+
+        logger.info(f"\nLoaded {len(all_documents):,} documents")
+
+        # Print source statistics
+        logger.info("\nDocuments by source:")
+        for source, count in sorted(source_stats.items(), key=lambda x: x[1], reverse=True):
+            logger.info(f"  {source}: {count:,} documents ({count/len(all_documents)*100:.2f}%)")
+
+        # Shuffle documents for better train/test split
+        logger.info("\nShuffling documents...")
+        random.shuffle(all_documents)
+
+        # Convert to HuggingFace Dataset format
+        logger.info("Converting to HuggingFace Dataset format...")
+        dataset_dict = {
+            'text': [doc['text'] for doc in all_documents],
+            'source': [doc.get('metadata', {}).get('source', 'unknown') for doc in all_documents],
+            'config': [doc.get('metadata', {}).get('config', 'default') for doc in all_documents],
+            'weight': [doc.get('metadata', {}).get('weight', 0.0) for doc in all_documents],
+        }
+
+        # Create dataset
+        dataset = Dataset.from_dict(dataset_dict)
+        logger.info(f"Created dataset with {len(dataset):,} examples")
+
+        # Create train/test split if requested
+        if train_test_split > 0:
+            logger.info(f"\nSplitting into train/test ({(1-train_test_split)*100:.0f}% / {train_test_split*100:.0f}%)...")
+            split_dataset = dataset.train_test_split(test_size=train_test_split, seed=42)
+            logger.info(f"  Train: {len(split_dataset['train']):,} examples")
+            logger.info(f"  Test: {len(split_dataset['test']):,} examples")
+            final_dataset = split_dataset
+        else:
+            # No split, just train
+            logger.info("\nNo train/test split (using all data as 'train')")
+            final_dataset = DatasetDict({'train': dataset})
+
+        # Push to Hub
+        logger.info(f"\nPushing to HuggingFace Hub: {repo_id}")
+        logger.info("This may take a while depending on dataset size...")
+
+        try:
+            final_dataset.push_to_hub(
+                repo_id=repo_id,
+                private=private,
+                max_shard_size=max_shard_size
+            )
+            logger.info(f"\n✓ Successfully pushed to: https://huggingface.co/datasets/{repo_id}")
+
+        except Exception as e:
+            logger.error(f"\n✗ Failed to push to Hub: {e}")
+            logger.error("Make sure you're logged in with: huggingface-cli login")
+            raise
+
+        logger.info("\n" + "="*80)
+        logger.info("Stage 3 Complete!")
+        logger.info("="*80)
+
 
 def main():
     parser = argparse.ArgumentParser(
-        description='Two-stage dataset processing: Download → Clean'
+        description='Three-stage dataset processing: Download → Clean → Push to Hub'
     )
 
     parser.add_argument(
         '--stage',
         type=int,
-        choices=[1, 2],
+        choices=[1, 2, 3],
         required=True,
-        help='Stage to run: 1 (download & sample) or 2 (clean & filter)'
+        help='Stage to run: 1 (download & sample), 2 (clean & filter), or 3 (combine & push to Hub)'
     )
     parser.add_argument(
         '--config',
@@ -375,6 +504,30 @@ def main():
         help='Random seed for sampling (Stage 1)'
     )
 
+    # Stage 3 specific arguments
+    parser.add_argument(
+        '--repo-id',
+        type=str,
+        help='HuggingFace Hub repository ID (e.g., username/dataset-name) - Required for Stage 3'
+    )
+    parser.add_argument(
+        '--private',
+        action='store_true',
+        help='Make the dataset private on HuggingFace Hub (Stage 3)'
+    )
+    parser.add_argument(
+        '--train-test-split',
+        type=float,
+        default=0.1,
+        help='Fraction for test split (0.0 to disable, 0.1 = 10%% test) - Stage 3'
+    )
+    parser.add_argument(
+        '--max-shard-size',
+        type=str,
+        default='500MB',
+        help='Maximum shard size for upload (e.g., "500MB", "1GB") - Stage 3'
+    )
+
     args = parser.parse_args()
 
     processor = TwoStageDatasetProcessor(config_path=args.config)
@@ -392,6 +545,16 @@ def main():
         processor.stage2_clean_and_filter(
             input_folder=args.raw_folder,
             output_folder=args.cleaned_folder
+        )
+
+    elif args.stage == 3:
+        # Stage 3: Combine and push to Hub
+        processor.stage3_combine_and_push(
+            input_folder=args.cleaned_folder,
+            repo_id=args.repo_id,
+            private=args.private,
+            train_test_split=args.train_test_split,
+            max_shard_size=args.max_shard_size
         )
 
     logger.info("\n✓ All done!")
